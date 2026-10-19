@@ -1,0 +1,4 @@
+# Vercel runtime; full local/test lock lives in backend/requirements.lock.txt.
+Flask==3.1.2
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.1.5

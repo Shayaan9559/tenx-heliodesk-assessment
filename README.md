@@ -1,0 +1,71 @@
+# HelioDesk
+
+A support ticket workspace built for the Tenx full-stack assessment using Flask, React/TypeScript and SQLite. Search/filter/sort/pagination run in Flask; ticket edits and append-only notes are transactional and persist locally after refresh.
+
+## Review entry points
+- [Specification](docs/spec.md), [API contract](docs/api.md), [architecture plan](docs/plan.md), [tasks](docs/tasks.md), [verification](docs/verification.md).
+- [Engineering explanations and interview walkthrough](docs/engineering-notes.md).
+- [Deployment and limitations](docs/deployment.md).
+- Source: `backend/app`, `frontend/src`; tests: `backend/tests`, `frontend/src/App.test.tsx`.
+
+## Prerequisites
+Python 3.11+ (Vercel uses 3.12), Node 20.19+ or Node 22.12+, npm, Git. Commands below run from repository root unless stated. macOS/Linux shell; on Windows use `.venv\Scripts\python`/`flask` instead of `.venv/bin/...`.
+
+## Clean setup and run (one server)
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -r backend/requirements.lock.txt
+npm ci --prefix frontend
+npm run build --prefix frontend
+cd backend
+../.venv/bin/flask --app app seed
+../.venv/bin/flask --app app run --host 127.0.0.1 --port 5000
+```
+Open http://127.0.0.1:5000. The development server is for local use. If macOS AirPlay occupies port 5000, choose 5001 and adjust the Vite proxy if using two-server development.
+
+`seed` creates schema and 12 varied synthetic tickets if the database is empty; it never replaces existing tickets. Default SQLite file: `backend/instance/heliodesk.db`. `init-db` creates only schema. To deliberately discard demo edits and rebuild seed data:
+```sh
+cd backend
+../.venv/bin/flask --app app reset-db --yes
+```
+
+## Two-server development
+Keep Flask running on port 5000. In another terminal, from root:
+```sh
+npm run dev --prefix frontend
+```
+Open the Vite URL (default http://127.0.0.1:5173). `/api` is proxied to Flask; no broad CORS permission is needed. React always reads and writes through HTTP.
+
+## Verify
+```sh
+cd backend
+../.venv/bin/pytest -q
+cd ..
+npm test --prefix frontend
+npm run build --prefix frontend
+```
+Backend tests use fresh temporary SQLite files, never the development database. Frontend tests mock HTTP responses and test visible behavior; native modal focus and mobile layout were checked in Chrome separately. See verification for executed checks and limitations.
+
+## Configuration
+`.env.example` lists optional variables; shell exports are supported (the app does not automatically load .env files).
+- `DATABASE_URL`: default `sqlite:///heliodesk.db` relative to Flask instance path. Use `sqlite:////absolute/path/db.sqlite` for a durable hosted volume.
+- `FLASK_INSTANCE_PATH`: optional absolute writable Flask instance folder.
+- `VITE_API_BASE_URL`: optional frontend build-time API origin; default same origin. Separate-origin hosting would also need a deliberately scoped server CORS configuration; the delivered same-origin setup does not need it.
+- `VITE_EPHEMERAL_DEMO=true`: build-time notice for Vercel demo storage limitations; Vercel build sets this automatically.
+- `PORT`: hosting server bind port; used by hosting command, not by app configuration.
+Never commit real secrets, the database, virtual environments or built assets.
+
+## Architecture and decisions
+The Flask factory supports isolated test configurations; SQLAlchemy models define relational persistence; service functions own query rules and writes; routes translate HTTP. React uses a small typed API layer and local component state. Aborted requests plus a generation guard prevent stale search results. Native dialog provides focus containment; field errors, semantic controls and live regions support keyboard/assistive use. Custom CSS handles table-to-card layout at small widths. UTC is serialized; browser local time is displayed with exact UTC timestamps in title attributes.
+
+Trade-off: a simple monolith and pessimistic saves prioritize correctness and explainability over extra infrastructure or optimistic rollback. No authentication is included because the brief explicitly excludes it. All seeded identities are synthetic.
+
+## Deployment status
+Deployment is in progress, not yet verified. This sentence will be replaced with verified URLs after publishing. Vercel’s local SQLite storage is ephemeral, so durable multi-instance hosted persistence is not claimed. Fully reproducible local SQLite setup is the persistence reference. See docs/deployment.md.
+
+## AI Usage
+OpenAI Codex was used to interpret the brief, draft the specification/API/plan, generate implementation/tests/CSS, debug failures, and execute local verification/browser checks. The candidate must review and understand the submission; AI-generated code is not evidence by itself.
+
+Corrected output: the first note-save implementation risked overwriting an unsaved status/priority draft with the note response. It was changed to preserve the draft, with a behavior test. Initial nested validation text also altered accessible input names; stable accessible labels corrected it. Dependency versions were upgraded after audit findings in development tooling.
+
+Verification: isolated pytest HTTP/database tests, React Testing Library user-event tests at the HTTP boundary, strict TypeScript production build, real Chrome integration/persistence/320px/modal checks, and a clean setup check. Results and honest gaps are recorded in docs/verification.md. Do not claim independent manual authorship or unperformed checks.

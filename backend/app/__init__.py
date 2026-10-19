@@ -8,7 +8,8 @@ from .service import ValidationError, NotFound
 
 def create_app(config=None):
     frontend = Path(__file__).resolve().parents[2] / 'frontend' / 'dist'
-    app = Flask(__name__, static_folder=None, instance_relative_config=True)
+    app = Flask(__name__, static_folder=None, instance_relative_config=True,
+                instance_path=os.getenv('FLASK_INSTANCE_PATH'))
     app.config.update(SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL', 'sqlite:///heliodesk.db'),
                       SQLALCHEMY_TRACK_MODIFICATIONS=False, MAX_CONTENT_LENGTH=16 * 1024)
     if config:

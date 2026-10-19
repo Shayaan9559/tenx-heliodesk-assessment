@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm ci --prefix frontend && VITE_EPHEMERAL_DEMO=true npm run build --prefix frontend && cp -R frontend/dist public",
+  "functions": {"index.py": {"excludeFiles": "{.venv/**,frontend/node_modules/**,backend/tests/**,docs/**,work/**,**/*.pdf}"}}
+}
