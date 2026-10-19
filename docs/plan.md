@@ -24,3 +24,6 @@ Hand-written tokens for spacing/color/radius, clear focus outlines, table deskto
 
 ## Verification
 pytest temporary isolated SQLite file. React Testing Library + Vitest user-visible behavior at API boundary. Build includes strict tsc. Manual Chrome keyboard, 320px, persistence and error recovery; record exact checks and gaps. Clean setup in fresh directory/database. Requirement mapping and explanations in verification.md and engineering-notes.md. Commit docs before implementation, backend before frontend, and evidence after execution.
+
+## Hosted persistence revision
+User authorized Supabase after choosing Vercel. DATABASE_URL selects psycopg/Postgres on host, SQLite locally. Supabase transaction pooler handles serverless connection reuse; SQLAlchemy NullPool avoids competing pools and automatic prepared statements are disabled. SSL is required. A transaction-scoped advisory lock serializes cold-start schema/seed initialization; seed data is inserted only into an empty database. No public Data API or browser database key is required. Credentials belong only in Vercel server environment, not VITE_* variables or source. This replaces the initially planned ephemeral serverless demo.

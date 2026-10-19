@@ -19,7 +19,7 @@ SEEDS = [
 ]
 
 
-def seed_data():
+def seed_data(commit=True):
     if db.session.scalar(select(func.count()).select_from(Ticket)):
         return False
     base = datetime(2026, 10, 19, 9, 0, tzinfo=timezone.utc)
@@ -33,7 +33,8 @@ def seed_data():
             ticket.notes = [Note(body='Customer confirmed the issue in two browsers.', author='Maya Chen', created_at=updated - timedelta(hours=2)),
                             Note(body='Billing service logs requested for investigation.', author='Omar Ali', created_at=updated - timedelta(hours=1))]
         db.session.add(ticket)
-    db.session.commit()
+    if commit:
+        db.session.commit()
     return True
 
 

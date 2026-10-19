@@ -50,3 +50,4 @@ AC-01 through AC-12 have the exact behaviors above and must receive Pass/Partial
 
 ## Change log
 - Initial specification created before implementation. Any justified changes are recorded here with reason and affected IDs.
+- Hosted database update (user-approved): Vercel frontend + Flask function use dedicated Supabase Postgres for durable data; SQLite remains mandatory default local/test engine. SQLAlchemy keeps service/model behavior shared. NFR-05 now requires persistent hosted writes rather than the earlier ephemeral demo fallback. No Supabase browser client or public Data API is used; all reads/writes still pass through Flask.

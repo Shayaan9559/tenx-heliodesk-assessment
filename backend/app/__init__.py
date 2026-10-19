@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from flask import Flask, jsonify, send_from_directory
 from werkzeug.exceptions import HTTPException, NotFound as HTTPNotFound
+from sqlalchemy.pool import NullPool
 from .models import db
 from .service import ValidationError, NotFound
 
@@ -10,10 +11,18 @@ def create_app(config=None):
     frontend = Path(__file__).resolve().parents[2] / 'frontend' / 'dist'
     app = Flask(__name__, static_folder=None, instance_relative_config=True,
                 instance_path=os.getenv('FLASK_INSTANCE_PATH'))
-    app.config.update(SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL', 'sqlite:///heliodesk.db'),
+    database_url = os.getenv('DATABASE_URL', 'sqlite:///heliodesk.db')
+    if database_url.startswith(('postgres://', 'postgresql://')):
+        database_url = database_url.replace('postgres://', 'postgresql+psycopg://', 1).replace('postgresql://', 'postgresql+psycopg://', 1)
+    app.config.update(SQLALCHEMY_DATABASE_URI=database_url,
                       SQLALCHEMY_TRACK_MODIFICATIONS=False, MAX_CONTENT_LENGTH=16 * 1024)
     if config:
         app.config.update(config)
+    if app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgresql+psycopg://'):
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            'poolclass': NullPool,
+            'connect_args': {'prepare_threshold': None, 'connect_timeout': 10, 'sslmode': 'require'},
+        }
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     db.init_app(app)
     from .routes import api

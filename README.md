@@ -1,6 +1,6 @@
 # HelioDesk
 
-A support ticket workspace built for the Tenx full-stack assessment using Flask, React/TypeScript and SQLite. Search/filter/sort/pagination run in Flask; ticket edits and append-only notes are transactional and persist locally after refresh.
+A support ticket workspace built for the Tenx full-stack assessment using Flask, React/TypeScript and SQLite locally, with Supabase Postgres for durable hosted data. Search/filter/sort/pagination run in Flask; ticket edits and append-only notes are transactional and persist locally after refresh.
 
 ## Review entry points
 - [Specification](docs/spec.md), [API contract](docs/api.md), [architecture plan](docs/plan.md), [tasks](docs/tasks.md), [verification](docs/verification.md).
@@ -49,9 +49,9 @@ Backend tests use fresh temporary SQLite files, never the development database. 
 ## Configuration
 `.env.example` lists optional variables; shell exports are supported (the app does not automatically load .env files).
 - `DATABASE_URL`: default `sqlite:///heliodesk.db` relative to Flask instance path. Use `sqlite:////absolute/path/db.sqlite` for a durable hosted volume.
+- Hosted `DATABASE_URL` accepts postgresql:// or postgresql+psycopg:// using the Supabase transaction pooler; SSL and disabled prepared statements are configured for psycopg. Never put this value in a VITE_* variable.
 - `FLASK_INSTANCE_PATH`: optional absolute writable Flask instance folder.
 - `VITE_API_BASE_URL`: optional frontend build-time API origin; default same origin. Separate-origin hosting would also need a deliberately scoped server CORS configuration; the delivered same-origin setup does not need it.
-- `VITE_EPHEMERAL_DEMO=true`: build-time notice for Vercel demo storage limitations; Vercel build sets this automatically.
 - `PORT`: hosting server bind port; used by hosting command, not by app configuration.
 Never commit real secrets, the database, virtual environments or built assets.
 
@@ -61,7 +61,7 @@ The Flask factory supports isolated test configurations; SQLAlchemy models defin
 Trade-off: a simple monolith and pessimistic saves prioritize correctness and explainability over extra infrastructure or optimistic rollback. No authentication is included because the brief explicitly excludes it. All seeded identities are synthetic.
 
 ## Deployment status
-Deployment is in progress, not yet verified. This sentence will be replaced with verified URLs after publishing. Vercel’s local SQLite storage is ephemeral, so durable multi-instance hosted persistence is not claimed. Fully reproducible local SQLite setup is the persistence reference. See docs/deployment.md.
+Repository: https://github.com/Shayaan9559/tenx-heliodesk-assessment. Live deployment is in progress and not yet verified. The target is Vercel for React and Flask, with dedicated Supabase Postgres for durable storage. SQLite remains the local/test default. See docs/deployment.md.
 
 ## AI Usage
 OpenAI Codex was used to interpret the brief, draft the specification/API/plan, generate implementation/tests/CSS, debug failures, and execute local verification/browser checks. The candidate must review and understand the submission; AI-generated code is not evidence by itself.

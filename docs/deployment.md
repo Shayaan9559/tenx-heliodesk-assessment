@@ -1,26 +1,37 @@
 # Deployment
 
-## Requested target: Vercel frontend + Flask backend
-Single Git repository, one Vercel project. `index.py` exports the Flask WSGI application. Root requirements declare Python runtime packages. Build installs locked frontend dependencies, compiles React, and copies assets to `public` for Vercel's CDN; Flask can also serve `frontend/dist`. Vercel handles HTTPS and routing to the Flask function.
+## Architecture
+- GitHub: https://github.com/Shayaan9559/tenx-heliodesk-assessment (public source and meaningful history).
+- Vercel: a single Flask project at repository root; React build copied to public/ for CDN, index.py exports WSGI app.
+- Supabase: a dedicated Postgres database accessed only by Flask, using its transaction pooler; public Data API disabled.
+- Local development/tests: SQLite under backend/instance by default. No external account is needed to run or verify locally.
 
-`VERCEL` runtime selects `/tmp/heliodesk.db` and writable instance directory; import creates and seeds the schema. On local execution, default database remains durable under backend/instance. No fake frontend-only persistence is introduced.
+The earlier ephemeral SQLite Vercel fallback was rejected after the user authorized Supabase. Hosted requests must never silently fall back to a local temporary file: missing hosted DATABASE_URL makes startup fail clearly.
 
-**Important limitation:** Vercel does not supply a persistent local disk for this SQLite file. Demo changes can be lost on cold starts/redeploys and different function instances may have different data. Persistence after refresh is best-effort in the hosted demo, not guaranteed. This is disclosed in the app and README. The brief explicitly allows documenting hosting storage limitations while providing a fully reproducible local setup; live primary workflow must still be demonstrated.
+## Configuration
+Set server-only DATABASE_URL on Vercel to the dedicated Supabase transaction-pooler connection string (port 6543). The app accepts postgres://, postgresql:// or postgresql+psycopg://. Use URL encoding for special characters in passwords. Never put credentials in VITE_* variables, source, screenshots or Git. Frontend uses same-origin /api and requires no database key.
 
-Potential future resolution: run the unchanged Flask/SQLite service on one host with a persistent volume, or agree a remote persistent database with the reviewer. Do not silently substitute the required local SQLite assessment model.
+Psycopg uses SSL, 10-second connect timeout, and prepare_threshold=None for transaction pooling. SQLAlchemy NullPool avoids holding extra per-instance pools. Vercel uses Python 3.12 (.python-version); local Python 3.11+ supported. Build installs frontend lock, runs TypeScript/Vite, copies output to public. No need to deploy two disconnected projects or widen CORS.
 
-## Steps
-1. Push complete repository and meaningful history to GitHub; confirm public reviewer access.
-2. Import repo in the user's Vercel account, repository root as project root, Flask framework, Python 3.12; retain configured build command.
-3. Deploy, check build logs and /api/health. Inspect React dashboard.
-4. Exercise search + filters, details, PATCH, note creation and refresh. Record public URL and storage caveat.
-5. Verify URL anonymously; deployment protection must not block reviewers.
+## Initialization
+At a Vercel cold start, a transaction-scoped Postgres advisory lock serializes create_all + empty-database seed. A nonempty database is unchanged. This is intentionally small-assessment bootstrapping; production schema evolution should use versioned migrations. All subsequent reads/writes use the same service layer as SQLite. Transactions protect note + parent timestamp changes.
 
-## Optional persistent host
-`render.yaml` is a prepared **paid-plan** alternative with a 1GB mounted disk, single Gunicorn worker and four threads. It has NOT been provisioned and no charge is authorized. Build installs Python lock and frontend lock; startup seeds only an empty DB. DATABASE_URL points to `/var/data/heliodesk.db`.
+## Release checks
+1. Verify repository is public and history/docs/source/tests are accessible.
+2. Import repository root as a **single Flask** project in the existing Vercel Hobby workspace; avoid inferred multiple-service mode.
+3. Set DATABASE_URL before first deploy. No paid plan authorized.
+4. Inspect build/runtime logs and /api/health.
+5. Exercise combined query, edit and note flows; refresh and issue subsequent requests to prove hosted Postgres persistence.
+6. Verify app URL without account credentials; do not leave reviewer access blocked by deployment protection.
 
-References checked 19 October 2026:
+## Known scope/operational limits
+No authentication per brief; use synthetic assessment data only. Public demo writes are intentional. Free services can pause or cold-start. No automatic migration system, concurrent-edit detection or idempotency key protocol is claimed. Supabase and SQLite differ in case-insensitive Unicode behavior; ASCII seeded search is covered. Hosted Postgres must be integration-tested before claiming hosted success.
+
+`render.yaml` remains an optional **unprovisioned paid** SQLite persistent-volume alternative; no charges were authorized. It is not the selected deployment.
+
+## Official references checked 19 October 2026
 - https://vercel.com/docs/frameworks/backend/flask
 - https://vercel.com/kb/guide/ship-a-flask-app-on-vercel
-- https://render.com/docs/disks
+- https://supabase.com/docs/guides/troubleshooting/using-sqlalchemy-with-supabase-FUqebT
+- https://supabase.com/docs/guides/database/connecting-to-postgres
 - https://flask.palletsprojects.com/en/stable/deploying/gunicorn/

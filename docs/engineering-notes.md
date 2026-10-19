@@ -60,8 +60,10 @@ Backend pytest creates a temporary database per test, seeds deterministic record
 
 Mocks prove UI behavior under controlled responses, not network/deployment correctness. Browser integration proves actual frontend-to-backend flows locally. Production build proves TypeScript/build validity. A separate clean setup check guards against hidden reliance on the developer's existing database. Hosted verification must be recorded separately; a successful local build alone is not a deployed app.
 
-## 12. Deployment explanation and honest limitation
-The requested Vercel setup serves React assets and runs Flask as a function. SQLite needs a writable file, so the serverless demo uses /tmp and seeds on initialization. That file is not durable across cold starts or shared across instances. Therefore local SQLite is the durable reference; hosted persistence is explicitly limited and disclosed. A persistent disk host is the straightforward long-term fit. No browser localStorage substitute is used. The brief permits documenting host limitations, but the live workflow must still be exercised.
+## 12. Deployment explanation
+The user chose Vercel for both React and Flask and authorized Supabase for durable hosted storage. SQLite remains the default local/test database to comply with the assessment. SQLAlchemy models and services are shared; hosted DATABASE_URL selects Postgres via psycopg, a transaction pooler, SSL, no automatic prepared statements and NullPool. This avoids relying on Vercel's ephemeral disk. All browser requests still go through Flask; Supabase Data API is disabled and database credentials stay in server-only Vercel environment.
+
+The application initializes schema/seed inside a transaction with an advisory lock so simultaneous serverless starts cannot seed duplicates. The seed command does not replace nonempty data. This is adequate for a small assessment deployment; production would use reviewed migrations rather than create_all at startup. Record hosted integration evidence separately from SQLite tests: passing tests against one SQL dialect is not proof of the other.
 
 ## 13. Trade-off and next improvements
 Submission trade-off: use a small monolith, server-confirmed saves and custom CSS instead of extra infrastructure/optimistic UI, to prioritize traceable correctness within the timebox. Known production work: durable hosted database, authentication/authorization, migrations, concurrent-edit conflict handling, idempotent note requests, broader browser/screen-reader checks and operational monitoring. These are intentionally distinguished from requirements left untested.
@@ -74,7 +76,7 @@ Submission trade-off: use a small monolith, server-confirmed saves and custom CS
 5. Add a note; show chronology; send an invalid request using docs/api.md examples and show unchanged data.
 6. Show 320px/keyboard Escape and return focus.
 7. Run tests; explain one backend failure and one stale-response test.
-8. State deployment storage limitation and your trade-off without overstating completeness.
+8. Explain local SQLite versus hosted Supabase, deployment checks and your trade-off without overstating completeness.
 
 ## Before speaking to the reviewer
 Be able to locate and explain the query builder, commit/rollback boundary, API client, effect cleanup, note validation and modal lifecycle. Try predicting what happens for page=0, priority=critical, q='%', a blank note, an old search finishing last, a resolved ticket reopened and a failed database commit. Then run the corresponding tests. Disclose AI assistance as README describes, and use the actual total time spent rather than inventing it.
