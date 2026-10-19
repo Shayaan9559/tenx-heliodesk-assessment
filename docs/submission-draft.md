@@ -15,5 +15,5 @@ The README includes setup/run/test instructions, deployment details, limitations
 Regards,
 Shayaan Shahid
 
-## Release gate
-Do not send this with placeholder URLs/time or unverified claims. Confirm anonymous repository/app access, hosted edits/notes after refresh, passing tests/build and deadline timezone. No email has been sent by Codex.
+## Before sending
+Anonymous repository/app access, hosted persistence, tests/build and mobile/keyboard checks have been verified. Supply your actual total focused time, review the submission and clarify the deadline timezone. No email has been sent by Codex.

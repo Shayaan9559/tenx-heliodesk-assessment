@@ -23,7 +23,7 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 | AC-09 | Pass | GET/PATCH/POST 404 tests; React missing-detail Close recovery |
 | AC-10 | Pass (automated) | frontend rejected fetch -> alert -> Retry -> restored result; real browser outage showed the error and Retry button; recovery could not be completed because Chrome began blocking the local origin with ERR_BLOCKED_BY_CLIENT after backend restart (automated Retry test passes) |
 | AC-11 | Pass | deferred fetch test resolves newest first and older later while transport ignores abort; old data cannot overwrite |
-| AC-12 | Partial | real Chrome 320px document width=320; dialog scrollWidth=clientWidth=319. Focus enters dialog, remains inside on backward traversal; Escape returns to ticket trigger. Keyboard note submission/validation exercised. Final design search typing, Enter-to-open/save and mobile edit rechecked; real outage recovery blocked by Chrome local-origin restriction; no screen-reader audit |
+| AC-12 | Pass | Live Chrome 320px keyboard search/status/priority filters, open/edit/save, note entry, blank-note validation recovery, Escape and useful return focus. documentWidth=320; drawer clientWidth=scrollWidth=319. Core contrast spot checks pass; full screen-reader audit outside recorded coverage. |
 
 ## Browser observations
 - Initial UI loaded real Flask data; no frontend imported dataset or localStorage.
@@ -40,7 +40,7 @@ Real Flask test client exercises all five endpoints, success statuses 200/201, 4
 - Vercel deployment succeeded at https://tenx-heliodesk-assessment.vercel.app with Flask runtime and built React assets.
 - Anonymous HTTP checks passed: health 200, default five results and accurate metadata, trimmed mixed-case combined query, priority ordering, successful PATCH followed by independent GET, invalid PATCH 400 with unchanged record, POST note 201 followed by independent GET, blank-note rejection without mutation, 404 and invalid pagination 400.
 - Smoke check used HD-1001, appended one clearly labeled verification note and restored its original status/priority. Every request crossed the public Vercel URL into Flask and Supabase; this was not an in-process mock.
-- Chrome independently loaded all 12 tickets and combined ' ALEX '/open/high produced HD-1001 and HD-1009. Chrome saved HD-1002 priority=high and appended a note, then a full browser reload/detail fetch retained both. Native keyboard selection of waiting_on_customer and Save succeeded at 320px. A lost-focus issue after save was found and corrected, with frontend focus assertions passing; final post-deployment keyboard continuity check follows.
+- Chrome independently loaded all 12 tickets and combined ' ALEX '/open/high produced HD-1001 and HD-1009. Chrome saved HD-1002 priority=high and appended a note, then a full browser reload/detail fetch retained both. Native keyboard selection of waiting_on_customer and Save succeeded at 320px. A lost-focus issue after save was found and corrected, with frontend focus assertions passing; post-deployment checks confirmed focus returns to Status after edit and Note after note save; validation focuses the invalid Note field.
 - Public GitHub API confirmed the repository is public; no reviewer login is needed for source. Public API verification also required no Vercel account/session, confirming primary reviewer access.
 
 ## Remaining scope limits
@@ -48,4 +48,13 @@ No Safari/Firefox or full screen-reader certification performed. No production l
 
 ## Release regressions corrected
 - Native keyboard focus after disabling Save: focus returns to first invalid field or relevant status/note control; frontend focus assertions pass.
-- Normalized static-file mtimes on Vercel could revalidate obsolete index.html. HTML now ignores conditional validators and is no-store; a new backend regression test passed. Final backend total: 15; frontend total: 9.
+- Normalized static-file mtimes on Vercel could revalidate obsolete index.html. HTML now ignores conditional validators and is no-store; a new backend regression test passed. Final backend total: 15; frontend total: 9. Both corrections are covered by behavioral assertions rather than implementation-only checks.
+
+## Final browser release checks
+- Latest code loaded successfully after the cache correction; anonymous root response is 200, Cache-Control: no-store, with no HTML ETag or Last-Modified validator.
+- Supabase browser note and ticket state remained present after two code redeploys, proving storage is not tied to the serverless filesystem.
+- At 320px, native keyboard Space/type-letter/Return selected status and priority controls. Search ' ALEX ', open and high yielded two correct rows; UI query values confirmed open/high/updated_at/desc.
+- Keyboard ticket Save succeeded. Updated focus remained inside the drawer on Status. Tab traversal reached note author/body/Add note; keyboard submission saved history and focused Note.
+- Empty note validation focused Note; keyboard correction and resubmission succeeded. Escape closed the drawer and focused the dashboard heading when its original trigger was temporarily absent during list refresh.
+- Final mobile document scrollWidth=innerWidth=320; dialog scrollWidth=clientWidth=319. Viewport override was restored.
+- Evidence: live-dashboard.jpg, live-desktop-dialog.jpg, live-mobile-dashboard.jpg and live-mobile-dialog.jpg.
