@@ -7,7 +7,7 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 - `npm test --prefix frontend`: **9 passed** after design refinement (Vitest 4.1.12, React Testing Library).
 - `npm run build --prefix frontend`: strict TypeScript and Vite production build passed.
 - `npm audit` from frontend: **0 known vulnerabilities** after upgrading development tooling; runtime and full audit checked. This is a point-in-time dependency check, not a security guarantee.
-- Clean fresh database + built asset smoke check: factory, create schema/seed, root HTML 200, 12 tickets, PATCH 200, GET saved priority passed. Full clean-clone install check pending.
+- Clean fresh database + built asset smoke check: factory, create schema/seed, root HTML 200, 12 tickets, PATCH 200, GET saved priority passed. Full clean committed-source checkout also completed: fresh venv/pinned pip install, npm ci, 14 backend tests, 9 frontend tests, production build, seed then idempotent seed all passed.
 
 ## Acceptance criteria
 | ID | Local result | Evidence |
@@ -21,9 +21,9 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 | AC-07 | Pass | backend note exactly one new row + refresh; frontend duplicate-disabled POST; Chrome note persisted after refresh |
 | AC-08 | Pass | direct HTTP whitespace/overlong/missing-author checks at backend boundary; React note validation |
 | AC-09 | Pass | GET/PATCH/POST 404 tests; React missing-detail Close recovery |
-| AC-10 | Pass (automated) | frontend rejected fetch -> alert -> Retry -> restored result; manual network outage check pending |
+| AC-10 | Pass (automated) | frontend rejected fetch -> alert -> Retry -> restored result; real browser outage showed the error and Retry button; recovery could not be completed because Chrome began blocking the local origin with ERR_BLOCKED_BY_CLIENT after backend restart (automated Retry test passes) |
 | AC-11 | Pass | deferred fetch test resolves newest first and older later while transport ignores abort; old data cannot overwrite |
-| AC-12 | Partial | real Chrome 320px document width=320; dialog scrollWidth=clientWidth=319. Focus enters dialog, remains inside on backward traversal; Escape returns to ticket trigger. Keyboard note submission/validation exercised. Full final keyboard-only search/edit/error recovery after design update pending; no screen-reader audit |
+| AC-12 | Partial | real Chrome 320px document width=320; dialog scrollWidth=clientWidth=319. Focus enters dialog, remains inside on backward traversal; Escape returns to ticket trigger. Keyboard note submission/validation exercised. Final design search typing, Enter-to-open/save and mobile edit rechecked; real outage recovery blocked by Chrome local-origin restriction; no screen-reader audit |
 
 ## Browser observations
 - Initial UI loaded real Flask data; no frontend imported dataset or localStorage.
