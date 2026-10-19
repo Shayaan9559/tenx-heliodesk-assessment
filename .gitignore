@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.db
+*.db-*
+instance/
+node_modules/
+dist/
+coverage/
+.env
+.DS_Store
+Technical Assessment.pdf
