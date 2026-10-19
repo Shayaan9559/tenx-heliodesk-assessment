@@ -11,3 +11,7 @@ coverage/
 .env
 .DS_Store
 Technical Assessment.pdf
+
+*.tsbuildinfo
+public/
+.vercel/
