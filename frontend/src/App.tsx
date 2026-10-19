@@ -162,8 +162,8 @@ export default function App() {
                     value={query.order}
                     onChange={(e) => change("order", e.target.value)}
                   >
-                    <option value="desc">Descending ↓</option>
-                    <option value="asc">Ascending ↑</option>
+                    <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
                   </select>
                 </label>
               </div>
@@ -217,13 +217,19 @@ export default function App() {
                   </thead>
                   <tbody>
                     {result.data.map((ticket) => (
-                      <tr key={ticket.id} className={selected === ticket.id ? "selected-row" : ""}>
+                      <tr
+                        key={ticket.id}
+                        className={selected === ticket.id ? "selected-row" : ""}
+                        onClick={(event) => {
+                          event.currentTarget.querySelector<HTMLButtonElement>(".ticket-link")?.focus({ preventScroll: true });
+                          setSelected(ticket.id);
+                        }}
+                      >
                         <td className="id-cell"><span className="ticket-id">{ticket.id}</span></td>
                         <td className="ticket-cell">
                           <button
                             className="ticket-link"
                             data-ticket-id={ticket.id}
-                            onClick={() => setSelected(ticket.id)}
                           >
                             {ticket.title}
                           </button>

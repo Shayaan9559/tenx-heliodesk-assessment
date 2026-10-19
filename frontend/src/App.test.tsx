@@ -350,3 +350,15 @@ it("desktop inspector leaves the queue interactive and Escape restores the ticke
     vi.unstubAllGlobals();
   }
 });
+
+
+it("opens ticket details from the requester cell and returns focus to the title", async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  const title = await screen.findByRole("button", { name: ticket.title });
+  await user.click(screen.getByText(ticket.requester_name));
+  const dialog = screen.getByRole("dialog");
+  await within(dialog).findByText(ticket.description);
+  await user.click(within(dialog).getByRole("button", { name: "Close ticket details" }));
+  expect(title).toHaveFocus();
+});
