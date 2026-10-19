@@ -3,6 +3,7 @@
 A support ticket workspace built for the Tenx full-stack assessment using Flask, React/TypeScript and SQLite locally, with Supabase Postgres for durable hosted data. Search/filter/sort/pagination run in Flask; ticket edits and append-only notes are transactional and persist locally after refresh.
 
 ## Review entry points
+- [Illustrated assessment walkthrough (PDF)](docs/HelioDesk-Assessment-Walkthrough.pdf) - screenshots, architecture, code excerpts and recorded test evidence.
 - [Specification](docs/spec.md), [API contract](docs/api.md), [architecture plan](docs/plan.md), [tasks](docs/tasks.md), [verification](docs/verification.md).
 - [Engineering explanations and interview walkthrough](docs/engineering-notes.md).
 - [Deployment and limitations](docs/deployment.md).
