@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: heliodesk
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r backend/requirements.lock.txt && npm ci --prefix frontend && npm run build --prefix frontend
+    startCommand: cd backend && flask --app app seed && gunicorn 'app:create_app()' --bind 0.0.0.0:$PORT --workers 1 --threads 4 --access-logfile -
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DATABASE_URL
+        value: sqlite:////var/data/heliodesk.db
+    disk:
+      name: heliodesk-data
+      mountPath: /var/data
+      sizeGB: 1
