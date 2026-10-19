@@ -31,7 +31,7 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 - Updating HD-1001 to in_progress/high, then adding a note and reloading, preserved both. Subsequent mobile checks saved priority urgent and another note.
 - At 320px, dashboard cards and drawer had no page-level horizontal overflow. Temporary viewport restored afterward.
 - Validation without author retained note text and showed an author field error; filling author then keyboard-submit saved it.
-- Screenshots in docs/evidence show desktop, mobile and drawer. These will be refreshed after final visual checks.
+- Core text/status/button contrast spot checks all exceed 4.5:1; see docs/evidence/contrast.md. Screenshots in docs/evidence show desktop, mobile and drawer. These will be refreshed after final visual checks.
 
 ## API contract checks
 Real Flask test client exercises all five endpoints, success statuses 200/201, 400 envelope, 404 and 405, literal search, sort/pagination, seed/reset and unexpected 500 rollback. `docs/api.md` includes executable curl examples. Native JSON malformed input is deliberately 400. Request size above 16KiB returns handled JSON 413 (operational limit).
