@@ -80,3 +80,6 @@ Submission trade-off: use a small monolith, server-confirmed saves and custom CS
 
 ## Before speaking to the reviewer
 Be able to locate and explain the query builder, commit/rollback boundary, API client, effect cleanup, note validation and modal lifecycle. Try predicting what happens for page=0, priority=critical, q='%', a blank note, an old search finishing last, a resolved ticket reopened and a failed database commit. Then run the corresponding tests. Disclose AI assistance as README describes, and use the actual total time spent rather than inventing it.
+
+## Browser-discovered focus correction
+A real Chrome mobile walkthrough revealed that disabling the currently focused Save button could move keyboard focus out of the page. The dialog now records which form was submitted and, after saving finishes, focuses the first invalid field or the status/note control. This preserves keyboard continuity after success and error. Frontend behavior tests assert focus after a ticket save and after a note save; this was discovered in a real browser because jsdom does not reproduce all native focus behavior automatically.

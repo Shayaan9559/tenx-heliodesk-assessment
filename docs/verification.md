@@ -36,5 +36,12 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 ## API contract checks
 Real Flask test client exercises all five endpoints, success statuses 200/201, 400 envelope, 404 and 405, literal search, sort/pagination, seed/reset and unexpected 500 rollback. `docs/api.md` includes executable curl examples. Native JSON malformed input is deliberately 400. Request size above 16KiB returns handled JSON 413 (operational limit).
 
-## Known gaps / release gate
-Dedicated Supabase project tenx-heliodesk has been created. Its transaction-pooler connection details are confirmed, but the earlier supplied password was rejected. Correct server-only DATABASE_URL entry and Vercel live workflow are pending. Public GitHub source has been pushed. Hosted Postgres behavior, anonymous deployment access and durable write verification must pass before final submission. No Safari/Firefox or full screen-reader certification performed. No production load/security audit claimed. Total candidate time must be supplied honestly by candidate; no invented duration.
+## Hosted verification — 19 October 2026
+- Vercel deployment succeeded at https://tenx-heliodesk-assessment.vercel.app with Flask runtime and built React assets.
+- Anonymous HTTP checks passed: health 200, default five results and accurate metadata, trimmed mixed-case combined query, priority ordering, successful PATCH followed by independent GET, invalid PATCH 400 with unchanged record, POST note 201 followed by independent GET, blank-note rejection without mutation, 404 and invalid pagination 400.
+- Smoke check used HD-1001, appended one clearly labeled verification note and restored its original status/priority. Every request crossed the public Vercel URL into Flask and Supabase; this was not an in-process mock.
+- Chrome independently loaded all 12 tickets and combined ' ALEX '/open/high produced HD-1001 and HD-1009. Chrome saved HD-1002 priority=high and appended a note, then a full browser reload/detail fetch retained both. Native keyboard selection of waiting_on_customer and Save succeeded at 320px. A lost-focus issue after save was found and corrected, with frontend focus assertions passing; final post-deployment keyboard continuity check follows.
+- Public GitHub API confirmed the repository is public; no reviewer login is needed for source. Public API verification also required no Vercel account/session, confirming primary reviewer access.
+
+## Remaining scope limits
+No Safari/Firefox or full screen-reader certification performed. No production load/security audit claimed. Authentication is intentionally absent per brief and records are synthetic. Free provider cold starts remain possible. Total candidate time must be supplied honestly by the candidate; no invented duration.

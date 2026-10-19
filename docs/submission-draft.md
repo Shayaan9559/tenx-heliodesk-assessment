@@ -5,8 +5,8 @@ Dear Nouman,
 Please find my HelioDesk assessment submission:
 
 - Repository: https://github.com/Shayaan9559/tenx-heliodesk-assessment
-- Live app: [insert verified public Vercel URL]
-- API health: [live origin]/api/health
+- Live app: https://tenx-heliodesk-assessment.vercel.app
+- API health: https://tenx-heliodesk-assessment.vercel.app/api/health
 - Total time spent: [candidate to supply actual focused time, including review and verification]
 - Trade-off: I used a small monolith with server-confirmed saves to prioritize reliable behavior and traceable verification within the timebox. SQLite is the default reproducible local database; the Vercel deployment uses Supabase Postgres for durable hosted persistence.
 

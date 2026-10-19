@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-19",
+  "origin": "https://tenx-heliodesk-assessment.vercel.app",
+  "result": "PASS",
+  "checks": [
+    "health",
+    "default list and metadata",
+    "combined search and filters",
+    "priority ordering",
+    "PATCH persists through GET",
+    "invalid PATCH atomicity",
+    "note creation persists through GET",
+    "blank note rejected without mutation",
+    "missing ticket 404",
+    "invalid pagination 400"
+  ],
+  "ticket": "HD-1001",
+  "verificationNoteAdded": true,
+  "originalStatusPriorityRestored": true,
+  "access": "anonymous HTTPS"
+}

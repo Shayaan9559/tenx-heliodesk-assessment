@@ -35,3 +35,10 @@ No authentication per brief; use synthetic assessment data only. Public demo wri
 - https://supabase.com/docs/guides/troubleshooting/using-sqlalchemy-with-supabase-FUqebT
 - https://supabase.com/docs/guides/database/connecting-to-postgres
 - https://flask.palletsprojects.com/en/stable/deploying/gunicorn/
+
+## Published release
+Live app: https://tenx-heliodesk-assessment.vercel.app
+API: https://tenx-heliodesk-assessment.vercel.app/api/health
+Public source and history: https://github.com/Shayaan9559/tenx-heliodesk-assessment
+
+Vercel deployment succeeded on 19 October 2026. DATABASE_URL is stored as a sensitive server-only environment variable for Production and Preview. No database credential is present in source or frontend assets. Anonymous HTTP verification passed all primary API checks, including persisted writes and no mutation on invalid input. The hosted database is the dedicated Supabase project tenx-heliodesk.

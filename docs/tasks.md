@@ -10,6 +10,6 @@
 - [x] T09 Responsive custom CSS and React tests (NFR-02/04, AC-01–12).
 - [x] T10 Clean setup/build/API/manual checks; honest evidence (NFR-03/04).
 - [x] T11 Explain decisions, AI usage, limitations and submission details (NFR-03).
-- [ ] T12 Accessible remote repo and hosted workflow, reviewer access (NFR-05).
+- [x] T12 Accessible remote repo and hosted workflow, reviewer access (NFR-05).
 
-Release gate: T12 requires correct server connection configuration for the created dedicated Supabase project and verified Vercel deployment. T10 has local evidence; final hosted evidence is still pending.
+All implementation/release tasks completed; live checks recorded in verification.md. Candidate must review the explanation guide and supply actual time spent before sending the submission draft.

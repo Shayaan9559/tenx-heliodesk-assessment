@@ -167,6 +167,7 @@ it("AC-04/05 saves server response and preserves active query on close", async (
   expect(
     await within(dialog).findByText("✓ Ticket changes saved."),
   ).toBeVisible();
+  expect(within(dialog).getByRole("combobox", { name: "Status" })).toHaveFocus();
   expect(within(dialog).getByRole("combobox", { name: "Status" })).toHaveValue(
     "resolved",
   );
@@ -271,6 +272,7 @@ it("AC-07/08 validates note, posts once while saving, renders canonical history 
   );
   expect(await within(dialog).findByText("Checked the logs.")).toBeVisible();
   expect(within(dialog).getByRole("textbox", { name: "Note" })).toHaveValue("");
+  expect(within(dialog).getByRole("textbox", { name: "Note" })).toHaveFocus();
   expect(within(dialog).getByRole("combobox", { name: "Status" })).toHaveValue(
     "in_progress",
   );

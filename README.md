@@ -61,7 +61,11 @@ The Flask factory supports isolated test configurations; SQLAlchemy models defin
 Trade-off: a simple monolith and pessimistic saves prioritize correctness and explainability over extra infrastructure or optimistic rollback. No authentication is included because the brief explicitly excludes it. All seeded identities are synthetic.
 
 ## Deployment status
-Repository: https://github.com/Shayaan9559/tenx-heliodesk-assessment. Live deployment is in progress and not yet verified. The target is Vercel for React and Flask, with dedicated Supabase Postgres for durable storage. SQLite remains the local/test default. See docs/deployment.md.
+- Live app: https://tenx-heliodesk-assessment.vercel.app
+- API health: https://tenx-heliodesk-assessment.vercel.app/api/health
+- Public repository: https://github.com/Shayaan9559/tenx-heliodesk-assessment
+
+Verified without account credentials: root HTML, API health, combined queries, sorting, persisted edits/notes, validation and missing-ticket responses. Vercel hosts React and Flask; a dedicated Supabase Postgres database provides durable hosted storage. SQLite remains the reproducible local/test default. See docs/deployment.md and docs/verification.md.
 
 ## AI Usage
 OpenAI Codex was used to interpret the brief, draft the specification/API/plan, generate implementation/tests/CSS, debug failures, and execute local verification/browser checks. The candidate must review and understand the submission; AI-generated code is not evidence by itself.

@@ -23,10 +23,22 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
   const [author, setAuthor] = useState("");
   const [saving, setSaving] = useState(false);
   const savingRef = useRef(false);
+  const nextFocus = useRef<"ticket" | "note" | null>(null);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    if (saving || !nextFocus.current) return;
+    const fallback = nextFocus.current === "ticket"
+      ? 'select[aria-label="Status"]'
+      : 'textarea[aria-label="Note"]';
+    const target = dialog.current?.querySelector<HTMLElement>(
+      '[aria-invalid="true"]',
+    ) || dialog.current?.querySelector<HTMLElement>(fallback);
+    nextFocus.current = null;
+    target?.focus();
+  }, [saving, fields]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     dialog.current?.showModal();
@@ -74,6 +86,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
     ticket && (status !== ticket.status || priority !== ticket.priority);
   async function save(kind: "ticket" | "note") {
     if (!ticket || savingRef.current) return;
+    nextFocus.current = kind;
     setMessage("");
     setError("");
     setFields({});
