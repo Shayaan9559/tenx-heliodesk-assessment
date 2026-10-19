@@ -86,3 +86,9 @@ A real Chrome mobile walkthrough revealed that disabling the currently focused S
 
 ## Deployment-discovered HTML cache correction
 Vercel's build bundle normalized static-file timestamps. Two index.html builds could therefore have the same timestamp, size and path-based ETag while referencing different hashed JavaScript files. A browser conditional reload could receive 304 for obsolete HTML and then fail to find the old asset. The Flask HTML response now bypasses conditional handling, sends Cache-Control: no-store, and omits ETag/Last-Modified; hashed assets can be cached immutably, and API responses are also no-store. A regression test simulates unchanged HTML length and normalized mtime, then sends stale conditional headers and requires the new asset reference with HTTP 200.
+
+
+## Selected navy and cobalt redesign (19 October 2026)
+The candidate selected the Precision Pro visual concept. Custom CSS now uses a midnight navy rail, cobalt actions/selection, white surfaces, compact typography and separate ID/title/requester columns. Assignee initials retain full names in accessible text and tooltips. At 1200px and above, details use a modeless native dialog beside the queue so the list stays interactive. Below 1200px the same component uses showModal for native focus containment; breakpoint changes reopen the appropriate presentation. Escape/close restore the original trigger, and existing save/error focus behavior is retained. Mobile renders ticket cards with no horizontal overflow at 320px. Search, combined filters, both sort controls, pagination, validation and server persistence are retained.
+
+Verification: 15 backend tests and 10 frontend behavior tests, including the new modeless inspector/Escape/focus regression, plus strict TypeScript/Vite production build. Chrome checked the real local 320px queue/details and desktop split view.

@@ -27,3 +27,9 @@ pytest temporary isolated SQLite file. React Testing Library + Vitest user-visib
 
 ## Hosted persistence revision
 User authorized Supabase after choosing Vercel. DATABASE_URL selects psycopg/Postgres on host, SQLite locally. Supabase transaction pooler handles serverless connection reuse; SQLAlchemy NullPool avoids competing pools and automatic prepared statements are disabled. SSL is required. A transaction-scoped advisory lock serializes cold-start schema/seed initialization; seed data is inserted only into an empty database. No public Data API or browser database key is required. Credentials belong only in Vercel server environment, not VITE_* variables or source. This replaces the initially planned ephemeral serverless demo.
+
+
+## Selected navy and cobalt redesign (19 October 2026)
+The candidate selected the Precision Pro visual concept. Custom CSS now uses a midnight navy rail, cobalt actions/selection, white surfaces, compact typography and separate ID/title/requester columns. Assignee initials retain full names in accessible text and tooltips. At 1200px and above, details use a modeless native dialog beside the queue so the list stays interactive. Below 1200px the same component uses showModal for native focus containment; breakpoint changes reopen the appropriate presentation. Escape/close restore the original trigger, and existing save/error focus behavior is retained. Mobile renders ticket cards with no horizontal overflow at 320px. Search, combined filters, both sort controls, pagination, validation and server persistence are retained.
+
+Verification: 15 backend tests and 10 frontend behavior tests, including the new modeless inspector/Escape/focus regression, plus strict TypeScript/Vite production build. Chrome checked the real local 320px queue/details and desktop split view.

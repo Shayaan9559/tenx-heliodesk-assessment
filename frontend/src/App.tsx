@@ -61,48 +61,15 @@ export default function App() {
   const filtered = !!(query.q.trim() || query.status || query.priority);
   const total = result?.pagination.totalItems || 0;
   return (
-    <div className="workspace">
+    <div className={`workspace${selected ? " has-selection" : ""}`}>
       <aside className="sidebar">
-        <a className="brand" href="#main" aria-label="HelioDesk home">
-          <span className="brand-mark">
-            h<span>·</span>
-          </span>
-          <span>
-            helio<span className="brand-light">desk</span>
-          </span>
-        </a>
-        <div className="workspace-label">WORKSPACE</div>
-        <a className="nav-item active" href="#main">
-          <Icon name="inbox" /> All tickets <span className="nav-dot" />
-        </a>
-        <div className="sidebar-feature" aria-hidden="true">
-          <div className="orbit-art">
-            <span />
-            <span />
-            <span />
-            <Icon name="spark" />
-          </div>
-          <strong>
-            Less noise.
-            <br />
-            More resolution.
-          </strong>
-          <p>A clear space for the work that matters.</p>
-        </div>
-        <div className="sidebar-bottom">
-          <span className="connection-dot" /> Team workspace
-          <span className="sidebar-footnote">
-            A little clarity. Better support.
-          </span>
-        </div>
+        <a className="brand" href="#main" aria-label="HelioDesk home">HelioDesk</a>
+        <a className="nav-item active" href="#main"><Icon name="inbox" /> Tickets</a>
+        <div className="sidebar-bottom"><span className="avatar">HD</span><span className="online-dot" /><span className="sr-only">Support workspace</span></div>
       </aside>
       <div className="main-shell">
         <header className="topbar">
-          <div>
-            <span className="breadcrumb">Workspace</span>
-            <span className="breadcrumb-slash">/</span>
-            <strong>All tickets</strong>
-          </div>
+          <span className="topbar-label">Support workspace</span>
           <div className="topbar-actions">
             <button
               className="refresh-button"
@@ -120,54 +87,11 @@ export default function App() {
         </header>
         <main id="main">
           <section className="page-heading">
-            <div>
-              <div className="eyebrow">A LITTLE CLARITY GOES A LONG WAY</div>
-              <h1>
-                Good support starts
-                <br />
-                with a clear next step<span className="accent">.</span>
-              </h1>
-              <p>Find the context. Move things forward. Make someone’s day.</p>
-            </div>
-            <div className="queue-summary">
-              <div className="queue-summary-top">
-                <span className="queue-icon">
-                  <Icon name="inbox" />
-                </span>
-                <span className="live-badge">
-                  <span className="connection-dot" />
-                  {error
-                    ? "Connection issue"
-                    : loading
-                      ? "Syncing"
-                      : "Up to date"}
-                </span>
-              </div>
-              <div className="queue-number">
-                {loading ? "—" : total.toString().padStart(2, "0")}
-                <Icon name="arrow" />
-              </div>
-              <span className="queue-caption">
-                {filtered
-                  ? "tickets in your current view"
-                  : "conversations in the workspace"}
-              </span>
-            </div>
+            <h1>Ticket workspace</h1>
+            <p>{loading ? "Syncing your tickets…" : `${total} ${filtered ? "matching tickets" : "tickets across all channels"}`}</p>
           </section>
           <section className="ticket-board" aria-labelledby="board-title">
-            <div className="board-heading">
-              <div className="section-line">
-                <h2 id="board-title" tabIndex={-1}>
-                  All tickets
-                </h2>
-                <span className="count-pill" aria-label="Ticket match count">
-                  {loading ? "…" : total}
-                </span>
-              </div>
-              <span className="board-caption">
-                <span className="connection-dot" /> Your team’s shared inbox
-              </span>
-            </div>
+            <h2 id="board-title" className="sr-only" tabIndex={-1}>All tickets</h2>
             <form
               className="filters"
               onSubmit={(e) => e.preventDefault()}
@@ -191,7 +115,7 @@ export default function App() {
                   value={query.status}
                   onChange={(e) => change("status", e.target.value)}
                 >
-                  <option value="">All statuses</option>
+                  <option value="">Status: Any</option>
                   {statuses.map((s) => (
                     <option key={s} value={s}>
                       {label(s)}
@@ -205,7 +129,7 @@ export default function App() {
                   value={query.priority}
                   onChange={(e) => change("priority", e.target.value)}
                 >
-                  <option value="">All priorities</option>
+                  <option value="">Priority: Any</option>
                   {priorities.map((p) => (
                     <option key={p} value={p}>
                       {label(p)}
@@ -282,7 +206,9 @@ export default function App() {
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Ticket / requester</th>
+                      <th scope="col">ID</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Requester</th>
                       <th scope="col">Status</th>
                       <th scope="col">Priority</th>
                       <th scope="col">Assignee</th>
@@ -291,9 +217,9 @@ export default function App() {
                   </thead>
                   <tbody>
                     {result.data.map((ticket) => (
-                      <tr key={ticket.id}>
+                      <tr key={ticket.id} className={selected === ticket.id ? "selected-row" : ""}>
+                        <td className="id-cell"><span className="ticket-id">{ticket.id}</span></td>
                         <td className="ticket-cell">
-                          <span className="ticket-id">{ticket.id}</span>
                           <button
                             className="ticket-link"
                             data-ticket-id={ticket.id}
@@ -301,9 +227,10 @@ export default function App() {
                           >
                             {ticket.title}
                           </button>
-                          <span className="requester-line">
+                        </td>
+                        <td data-label="Requester"><span className="requester-line">
                             {ticket.requester_name}
-                            <span aria-hidden="true"> · </span>
+
                             <span>{ticket.requester_email}</span>
                           </span>
                         </td>
@@ -333,7 +260,7 @@ export default function App() {
                               ticket.assignee ? "assignee" : "unassigned"
                             }
                           >
-                            {ticket.assignee || "Unassigned"}
+                            {ticket.assignee ? <span className="avatar assignee-avatar" title={ticket.assignee}>{ticket.assignee.split(" ").map(w => w[0]).slice(0, 2).join("")}<span className="sr-only">{ticket.assignee}</span></span> : "Unassigned"}
                           </span>
                         </td>
                         <td data-label="Updated">
@@ -387,13 +314,6 @@ export default function App() {
               </nav>
             </footer>
           </section>
-          <footer className="page-footer">
-            <span>
-              <span className="brand-dot">h·</span> Thoughtful support starts
-              here.
-            </span>
-            <span>HelioDesk · Support workspace</span>
-          </footer>
         </main>
       </div>
       {selected && (

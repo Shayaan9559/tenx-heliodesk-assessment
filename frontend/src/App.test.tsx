@@ -324,3 +324,29 @@ it("AC-11 older response cannot overwrite latest results even when transport ign
   );
   expect(screen.getByRole("button", { name: "Newest result" })).toBeVisible();
 });
+
+it("desktop inspector leaves the queue interactive and Escape restores the ticket trigger", async () => {
+  const user = userEvent.setup();
+  const media = { matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+  vi.stubGlobal("matchMedia", vi.fn(() => media));
+  const show = vi.spyOn(HTMLDialogElement.prototype, "show").mockImplementation(function (this: HTMLDialogElement) {
+    this.setAttribute("open", "");
+  });
+  try {
+    render(<App />);
+    const trigger = await screen.findByRole("button", { name: ticket.title });
+    await user.click(trigger);
+    const inspector = screen.getByRole("dialog");
+    await within(inspector).findByText(ticket.description);
+    expect(show).toHaveBeenCalledOnce();
+    expect(screen.getByRole("searchbox", { name: "Search tickets" })).toBeEnabled();
+    await user.click(within(inspector).getByRole("combobox", { name: "Status" }));
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(media.removeEventListener).toHaveBeenCalled();
+  } finally {
+    show.mockRestore();
+    vi.unstubAllGlobals();
+  }
+});

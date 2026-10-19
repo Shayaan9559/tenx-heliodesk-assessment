@@ -14,6 +14,7 @@ import {
 type Props = { id: string; onClose: () => void; onSaved: () => void };
 export default function TicketDialog({ id, onClose, onSaved }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const modeless = useRef(false);
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -41,8 +42,17 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
   }, [saving, fields]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    dialog.current?.showModal();
+    const media = typeof window.matchMedia === "function" ? window.matchMedia("(min-width: 1200px)") : null;
+    const present = () => {
+      dialog.current?.close();
+      modeless.current = !!media?.matches;
+      if (modeless.current) dialog.current?.show();
+      else dialog.current?.showModal();
+    };
+    present();
+    media?.addEventListener("change", present);
     return () => {
+      media?.removeEventListener("change", present);
       dialog.current?.close();
       if (previous?.isConnected) previous.focus();
       else
@@ -138,6 +148,10 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
   return (
     <dialog
       ref={dialog}
+      className="ticket-inspector"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && modeless.current && !savingRef.current) onClose();
+      }}
       aria-labelledby="ticket-heading"
       onCancel={(event) => {
         event.preventDefault();
@@ -186,7 +200,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
               </div>
             </div>
             <div className="description">
-              <span className="eyebrow">CUSTOMER ISSUE</span>
+              <span className="eyebrow">Description</span>
               <p>{ticket.description}</p>
             </div>
             <dl className="ticket-meta">
@@ -211,7 +225,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
               }}
               aria-label="Update ticket"
             >
-              <h3>Manage ticket</h3>
+
               <fieldset disabled={saving} className="edit-fields">
                 <legend className="sr-only">Ticket status and priority</legend>
                 <label>
@@ -287,7 +301,8 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
                 <ol className="note-list">
                   {ticket.notes.map((note) => (
                     <li key={note.id}>
-                      <div className="note-heading">
+                      <span className="avatar note-avatar" aria-hidden="true">{note.author.split(" ").map(w => w[0]).slice(0, 2).join("")}</span>
+                      <div className="note-content"><div className="note-heading">
                         <strong>{note.author}</strong>
                         <time
                           dateTime={note.created_at}
@@ -296,7 +311,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
                           {date(note.created_at)}
                         </time>
                       </div>
-                      <p>{note.body}</p>
+                      <p>{note.body}</p></div>
                     </li>
                   ))}
                 </ol>
@@ -313,6 +328,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
                 }}
                 noValidate
               >
+                <h3>Add internal note</h3>
                 <fieldset disabled={saving}>
                   <legend className="sr-only">New internal note</legend>
                   <label>

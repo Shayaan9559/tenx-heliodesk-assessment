@@ -58,3 +58,9 @@ No Safari/Firefox or full screen-reader certification performed. No production l
 - Empty note validation focused Note; keyboard correction and resubmission succeeded. Escape closed the drawer and focused the dashboard heading when its original trigger was temporarily absent during list refresh.
 - Final mobile document scrollWidth=innerWidth=320; dialog scrollWidth=clientWidth=319. Viewport override was restored.
 - Evidence: live-dashboard.jpg, live-desktop-dialog.jpg, live-mobile-dashboard.jpg and live-mobile-dialog.jpg.
+
+
+## Selected navy and cobalt redesign (19 October 2026)
+The candidate selected the Precision Pro visual concept. Custom CSS now uses a midnight navy rail, cobalt actions/selection, white surfaces, compact typography and separate ID/title/requester columns. Assignee initials retain full names in accessible text and tooltips. At 1200px and above, details use a modeless native dialog beside the queue so the list stays interactive. Below 1200px the same component uses showModal for native focus containment; breakpoint changes reopen the appropriate presentation. Escape/close restore the original trigger, and existing save/error focus behavior is retained. Mobile renders ticket cards with no horizontal overflow at 320px. Search, combined filters, both sort controls, pagination, validation and server persistence are retained.
+
+Verification: 15 backend tests and 10 frontend behavior tests, including the new modeless inspector/Escape/focus regression, plus strict TypeScript/Vite production build. Chrome checked the real local 320px queue/details and desktop split view.

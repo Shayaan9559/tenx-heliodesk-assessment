@@ -9,3 +9,7 @@ HTMLDialogElement.prototype.showModal = function () {
 HTMLDialogElement.prototype.close = function () {
   this.removeAttribute("open");
 };
+
+HTMLDialogElement.prototype.show = function () {
+  this.setAttribute("open", "");
+};
