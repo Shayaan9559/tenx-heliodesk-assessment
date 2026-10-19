@@ -3,7 +3,7 @@
 Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted results tracked separately and must not be inferred from local tests.
 
 ## Executed automated checks
-- `cd backend && ../.venv/bin/pytest -q`: **14 passed** after Postgres support was added; isolated temporary SQLite database per test.
+- `cd backend && ../.venv/bin/pytest -q`: **15 passed** after Postgres support was added; isolated temporary SQLite database per test.
 - `npm test --prefix frontend`: **9 passed** after design refinement (Vitest 4.1.12, React Testing Library).
 - `npm run build --prefix frontend`: strict TypeScript and Vite production build passed.
 - `npm audit` from frontend: **0 known vulnerabilities** after upgrading development tooling; runtime and full audit checked. This is a point-in-time dependency check, not a security guarantee.
@@ -45,3 +45,7 @@ Real Flask test client exercises all five endpoints, success statuses 200/201, 4
 
 ## Remaining scope limits
 No Safari/Firefox or full screen-reader certification performed. No production load/security audit claimed. Authentication is intentionally absent per brief and records are synthetic. Free provider cold starts remain possible. Total candidate time must be supplied honestly by the candidate; no invented duration.
+
+## Release regressions corrected
+- Native keyboard focus after disabling Save: focus returns to first invalid field or relevant status/note control; frontend focus assertions pass.
+- Normalized static-file mtimes on Vercel could revalidate obsolete index.html. HTML now ignores conditional validators and is no-store; a new backend regression test passed. Final backend total: 15; frontend total: 9.

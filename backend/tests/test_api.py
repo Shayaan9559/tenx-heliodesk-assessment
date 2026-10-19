@@ -126,3 +126,27 @@ def test_empty_database_metadata(client, app):
         db.session.query(Ticket).delete()
         db.session.commit()
     assert client.get('/api/tickets').json == dict(data=[], pagination=dict(page=1,pageSize=5,totalItems=0,totalPages=0))
+
+
+def test_nfr03_new_release_html_never_revalidates_to_obsolete_asset(tmp_path):
+    from app import create_app
+    import os
+    build = tmp_path / 'dist'
+    build.mkdir()
+    html = build / 'index.html'
+    html.write_text('<script src="/assets/old.js"></script>')
+    app = create_app({'TESTING': True, 'FRONTEND_DIST': str(build),
+                      'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'})
+    client = app.test_client()
+    first = client.get('/')
+    assert first.status_code == 200
+    assert first.headers['Cache-Control'] == 'no-store'
+    assert 'ETag' not in first.headers and 'Last-Modified' not in first.headers
+    # Reproduce normalized mtimes + identical content length on a new release.
+    html.write_text('<script src="/assets/new.js"></script>')
+    os.utime(html, (1540000000, 1540000000))
+    updated = client.get('/', headers={'If-Modified-Since': 'Wed, 01 Jan 2099 00:00:00 GMT',
+                                      'If-None-Match': 'old-build-tag'})
+    assert updated.status_code == 200
+    assert b'/assets/new.js' in updated.data
+    assert client.get('/api/health').headers['Cache-Control'] == 'no-store'

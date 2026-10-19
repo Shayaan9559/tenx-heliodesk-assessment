@@ -83,3 +83,6 @@ Be able to locate and explain the query builder, commit/rollback boundary, API c
 
 ## Browser-discovered focus correction
 A real Chrome mobile walkthrough revealed that disabling the currently focused Save button could move keyboard focus out of the page. The dialog now records which form was submitted and, after saving finishes, focuses the first invalid field or the status/note control. This preserves keyboard continuity after success and error. Frontend behavior tests assert focus after a ticket save and after a note save; this was discovered in a real browser because jsdom does not reproduce all native focus behavior automatically.
+
+## Deployment-discovered HTML cache correction
+Vercel's build bundle normalized static-file timestamps. Two index.html builds could therefore have the same timestamp, size and path-based ETag while referencing different hashed JavaScript files. A browser conditional reload could receive 304 for obsolete HTML and then fail to find the old asset. The Flask HTML response now bypasses conditional handling, sends Cache-Control: no-store, and omits ETag/Last-Modified; hashed assets can be cached immutably, and API responses are also no-store. A regression test simulates unchanged HTML length and normalized mtime, then sends stale conditional headers and requires the new asset reference with HTTP 200.

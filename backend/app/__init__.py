@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from werkzeug.exceptions import HTTPException, NotFound as HTTPNotFound
 from sqlalchemy.pool import NullPool
 from .models import db
@@ -23,6 +23,7 @@ def create_app(config=None):
             'poolclass': NullPool,
             'connect_args': {'prepare_threshold': None, 'connect_timeout': 10, 'sslmode': 'require'},
         }
+    frontend = Path(app.config.get("FRONTEND_DIST", frontend))
     Path(app.instance_path).mkdir(parents=True, exist_ok=True)
     db.init_app(app)
     from .routes import api
@@ -52,6 +53,12 @@ def create_app(config=None):
         app.logger.exception('Unexpected error while handling request')
         return error('INTERNAL_ERROR', 'Something went wrong. Please try again.', 500)
 
+    @app.after_request
+    def prevent_stale_api_responses(response):
+        if request.path.startswith('/api/'):
+            response.headers['Cache-Control'] = 'no-store'
+        return response
+
     @app.get('/')
     @app.get('/<path:path>')
     def frontend_files(path='index.html'):
@@ -60,6 +67,15 @@ def create_app(config=None):
         if not frontend.exists():
             return error('FRONTEND_NOT_BUILT', 'Build frontend first, or use the Vite development server.', 404)
         # send_from_directory safely rejects directory traversal.
-        return send_from_directory(frontend, path)
+        # Build systems can normalize mtimes and keep HTML size unchanged across
+        # releases. Conditional HTML responses could then retain obsolete asset hashes.
+        response = send_from_directory(frontend, path, conditional=path != 'index.html')
+        if path == 'index.html':
+            response.headers['Cache-Control'] = 'no-store'
+            response.headers.pop('ETag', None)
+            response.headers.pop('Last-Modified', None)
+        elif path.startswith('assets/'):
+            response.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+        return response
 
     return app
