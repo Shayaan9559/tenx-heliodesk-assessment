@@ -13,3 +13,5 @@
 - [x] T12 Accessible remote repo and hosted workflow, reviewer access (NFR-05).
 
 All implementation/release tasks completed; live checks recorded in verification.md. Candidate must review the explanation guide and supply actual time spent before sending the submission draft.
+
+- [x] T13 / BONUS-01 / AC-04/05/07: execute the real-browser persistence test, save recording/evidence, document repeatable command and trade-off.

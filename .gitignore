@@ -16,3 +16,7 @@ Technical Assessment.pdf
 /public/
 .vercel/
 work/
+
+# Generated browser-test recordings and reports
+frontend/test-results/
+frontend/playwright-report/

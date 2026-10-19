@@ -76,3 +76,17 @@ Verification: isolated pytest HTTP/database tests, React Testing Library user-ev
 
 ## Rule 4 note length clarification
 Notes require 3-500 non-whitespace Unicode characters. Interior spaces/newlines are stored but do not count; outer whitespace is trimmed. Author remains 1-80 trimmed characters. React and Flask apply matching counts. The database provides a coarse minimum constraint; the service enforces the exact Unicode count. For an existing local database created before this revision, run `../.venv/bin/flask --app app migrate-notes` from backend before starting. Fresh setup needs no migration. Hosted Postgres migrates under the existing initialization lock, preserving notes.
+
+## Optional bonus: one automated end-to-end persistence test
+Chosen bonus: **an end-to-end test** (no other bonus option is claimed). Playwright runs the real built React app in Chromium against Flask and a newly seeded temporary SQLite database; no HTTP mocking. It edits a ticket, adds a note, reloads, checks the visible saved values/history, and independently reads the API to confirm exactly one added note.
+
+After the normal Python/npm setup, run from repository root:
+```sh
+npm exec --prefix frontend -- playwright install chromium
+npm run test:e2e --prefix frontend
+```
+Alternatively, run `npx playwright install chromium` from frontend. The E2E command builds React, starts its own isolated Flask server on 127.0.0.1:5063, seeds 12 tickets and shuts the server down afterward. It never uses your hosted DATABASE_URL or development database. Do not run a different service on that port. E2E_PYTHON can select another Python executable (default ../.venv/bin/python relative to frontend); E2E_PORT can select a free port. On Windows set E2E_PYTHON to the absolute .venv Scripts python.exe path.
+
+Generated artifacts (ignored by Git): frontend/playwright-report/index.html and frontend/test-results/ (JSON result, screenshot, trace, WebM video). Open the HTML report with `cd frontend && npx playwright show-report`. Source: frontend/e2e/ticket-persistence.spec.ts, frontend/playwright.config.ts and backend/e2e_server.py.
+
+Trade-off: one real-browser critical-path test adds integration/persistence confidence at the cost of a browser download and slower startup. It complements fast API/component tests; it does not claim full cross-browser coverage or hosted Postgres testing. Playwright setup follows https://playwright.dev/docs/browsers and https://playwright.dev/docs/test-webserver.

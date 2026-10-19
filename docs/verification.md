@@ -78,3 +78,12 @@ Chrome on macOS, desktop viewport 1470px. An isolated local Flask verification w
 5. Saved before/after screenshots: [error](evidence/retry-error.png) and [recovered](evidence/retry-recovered.png). Stopped the temporary server afterward.
 
 Result: **AC-10 Pass, manual and automated**. This completes the earlier interrupted browser check. The controlled failure reproduces an HTTP server error, rather than physically disconnecting the network. No application changes were required.
+
+## BONUS-01: recorded automated end-to-end persistence test
+**Pass — 19 October 2026.** `npm run test:e2e --prefix frontend`: **1 passed (3.9s)**, zero retries. Playwright 1.64.1, Chromium headless shell 156.0.8078.4, macOS arm64, Node 26.8.1, Python 3.11. Existing suite: 17 backend + 12 frontend tests passed; production TypeScript/Vite build passed. Total: **30 automated tests** across the three suites.
+
+The built React app contacted real Flask over HTTP with an isolated freshly seeded SQLite database. The browser opened HD-1001, saved in_progress/urgent, appended a note, reloaded and reopened the ticket, and asserted the saved status, priority and note. An independent GET confirmed exactly one matching note. No HTTP mocks, hosted credentials or development data were used.
+
+Evidence: [recording](evidence/e2e-persistence.webm), [saved ticket screenshot](evidence/e2e-persisted-ticket.png), [machine-readable result](evidence/e2e-result.json). Each fresh run also generates an ignored HTML report, trace ZIP, screenshot and video in frontend/playwright-report and frontend/test-results. Commands and setup are in README.
+
+Only the automated E2E option is claimed for optional bonus. Trade-off: extra browser installation and slower startup in exchange for repeatable cross-stack persistence evidence. This is one critical-path desktop Chromium test, not full cross-browser or hosted-Postgres coverage. The first invocation preceded completion of the browser download and could not launch; after installation, the recorded run passed without retries. Bonus points remain the hiring team's decision.
