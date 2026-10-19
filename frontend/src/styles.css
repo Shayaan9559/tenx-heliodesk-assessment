@@ -1129,3 +1129,24 @@ td time { font-size: 12px; }
   .board-footer { font-size: 13px; }
   .ticket-inspector { background: white; }
 }
+
+/* Compact, labeled refresh action. */
+.refresh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 11px;
+  border: 1px solid #d6e0ed;
+  border-radius: 6px;
+  background: white;
+  color: #344b6c;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+.refresh-button svg { width: 15px; height: 15px; stroke-width: 1.8; }
+.refresh-button:hover:not(:disabled) { background: #f2f6fc; border-color: #b8c9df; color: #0655ff; }
+.refresh-button:active:not(:disabled) { background: #e7effb; }

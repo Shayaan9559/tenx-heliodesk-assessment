@@ -15,8 +15,8 @@ const paths: Record<Name, ReactNode> = {
   ),
   refresh: (
     <>
-      <path d="M20 7v5h-5M4 17v-5h5" />
-      <path d="M5.1 7a8 8 0 0 1 13-2L20 8M4 16l1.9 3a8 8 0 0 0 13-2" />
+      <path d="M20 11a8 8 0 1 0-2.3 6.7" />
+      <path d="M20 4v7h-7" />
     </>
   ),
   arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,

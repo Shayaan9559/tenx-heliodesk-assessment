@@ -78,6 +78,7 @@ export default function App() {
               aria-label="Refresh tickets"
             >
               <Icon name="refresh" />
+              <span>Refresh</span>
             </button>
             <div className="team-badge">
               <span className="avatar small-avatar">HD</span>
