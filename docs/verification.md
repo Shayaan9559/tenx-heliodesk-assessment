@@ -21,7 +21,7 @@ Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted re
 | AC-07 | Pass | backend note exactly one new row + refresh; frontend duplicate-disabled POST; Chrome note persisted after refresh |
 | AC-08 | Pass | direct HTTP whitespace/overlong/missing-author checks at backend boundary; React note validation |
 | AC-09 | Pass | GET/PATCH/POST 404 tests; React missing-detail Close recovery |
-| AC-10 | Pass (automated) | frontend rejected fetch -> alert -> Retry -> restored result; real browser outage showed the error and Retry button; recovery could not be completed because Chrome began blocking the local origin with ERR_BLOCKED_BY_CLIENT after backend restart (automated Retry test passes) |
+| AC-10 | Pass | Automated rejected-fetch/Retry test; completed real Chrome HTTP 503 -> error -> restore API -> keyboard Enter on Retry -> five tickets and total 12 without navigation/reload. See manual Retry recovery below. |
 | AC-11 | Pass | deferred fetch test resolves newest first and older later while transport ignores abort; old data cannot overwrite |
 | AC-12 | Pass | Live Chrome 320px keyboard search/status/priority filters, open/edit/save, note entry, blank-note validation recovery, Escape and useful return focus. documentWidth=320; drawer clientWidth=scrollWidth=319. Core contrast spot checks pass; full screen-reader audit outside recorded coverage. |
 
@@ -67,3 +67,14 @@ Verification: 15 backend tests and 10 frontend behavior tests, including the new
 
 ## Rule 4 literal whitespace counting revision
 17 backend and 12 frontend tests pass (29 total); strict TypeScript/Vite build passes. New regression cases reject two visible characters separated by whitespace, reject 501 non-whitespace characters, accept 3 and 500 with interior spaces/newlines/Unicode whitespace, retain note formatting and failed-write state, and preserve existing SQLite note data through an idempotent constraint migration. React counter and validation exclude whitespace with the same Unicode set as Python. Existing local databases use migrate-notes; hosted Postgres migrates under the initialization lock.
+
+## Completed manual Retry recovery — 19 October 2026
+Chrome on macOS, desktop viewport 1470px. An isolated local Flask verification wrapper at 127.0.0.1:5057 served the current built React assets and normal SQLite-backed service. A temporary before_request hook returned a documented-shape HTTP 503 for GET /api/tickets while a local outage flag existed. This hook was outside the repository and never deployed.
+
+1. Opened the app with the API outage active. Chrome displayed “We couldn’t load your tickets”, the temporary outage message, and a working Retry button.
+2. Removed the outage flag while keeping the same browser page and server running. No page reload or navigation was used.
+3. Activated Retry with Enter. React displayed its loading state and made a fresh HTTP request.
+4. The normal API response restored five ticket rows and “Showing 1–5 of 12 matching tickets”.
+5. Saved before/after screenshots: [error](evidence/retry-error.png) and [recovered](evidence/retry-recovered.png). Stopped the temporary server afterward.
+
+Result: **AC-10 Pass, manual and automated**. This completes the earlier interrupted browser check. The controlled failure reproduces an HTTP server error, rather than physically disconnecting the network. No application changes were required.
