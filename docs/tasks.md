@@ -12,4 +12,4 @@
 - [x] T11 Explain decisions, AI usage, limitations and submission details (NFR-03).
 - [ ] T12 Accessible remote repo and hosted workflow, reviewer access (NFR-05).
 
-Release gate: T12 requires user-created dedicated Supabase project, secure server connection configuration and verified Vercel deployment. T10 has local evidence; final hosted evidence is still pending.
+Release gate: T12 requires correct server connection configuration for the created dedicated Supabase project and verified Vercel deployment. T10 has local evidence; final hosted evidence is still pending.

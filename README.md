@@ -66,6 +66,6 @@ Repository: https://github.com/Shayaan9559/tenx-heliodesk-assessment. Live deplo
 ## AI Usage
 OpenAI Codex was used to interpret the brief, draft the specification/API/plan, generate implementation/tests/CSS, debug failures, and execute local verification/browser checks. The candidate must review and understand the submission; AI-generated code is not evidence by itself.
 
-Corrected output: the first note-save implementation risked overwriting an unsaved status/priority draft with the note response. It was changed to preserve the draft, with a behavior test. Initial nested validation text also altered accessible input names; stable accessible labels corrected it. Dependency versions were upgraded after audit findings in development tooling.
+Corrected output: the initial generated form nested validation text inside labels, which changed accessible input names once an error appeared. Failing frontend tests exposed it; stable accessible labels corrected it, and the tests then passed. Initial development-tool versions were also rejected after audit findings and upgraded to audited versions. The note-save behavior deliberately preserves unsaved status/priority drafts and is covered by a behavior test.
 
 Verification: isolated pytest HTTP/database tests, React Testing Library user-event tests at the HTTP boundary, strict TypeScript production build, real Chrome integration/persistence/320px/modal checks, and a clean setup check. Results and honest gaps are recorded in docs/verification.md. Do not claim independent manual authorship or unperformed checks.
