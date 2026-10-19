@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;550;600;650;700&family=Manrope:wght@500;600;700;750;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;650;700&family=Manrope:wght@500;600;700;750;800&display=swap');
 :root {
   font-family:'DM Sans',system-ui,sans-serif;
   color:#091b40;
@@ -1056,4 +1056,76 @@ tbody tr:focus-within {
     background-position: right 8px center;
     background-size: 14px;
   }
+}
+
+/* Humanist Clarity: readable type and distinct mobile ticket surfaces. */
+:root {
+  font-family: "Source Sans 3", system-ui, sans-serif;
+  --muted: #506584;
+}
+button, input, select, textarea { font-family: inherit; }
+h1 { font-weight: 750; letter-spacing: -1px; }
+.ticket-link { font-size: 16px; font-weight: 600; line-height: 1.5; }
+.requester-line { font-size: 15px; line-height: 1.5; }
+.requester-line > span { font-size: 13px; }
+th { font-size: 13px; font-weight: 600; }
+td { font-size: 14px; }
+.status-badge, .priority { font-size: 13px; }
+td time { font-size: 12px; }
+.ticket-title { font-weight: 700; line-height: 1.45; }
+.description p { font-size: 16px; line-height: 1.6; }
+.note-list p { font-size: 14px; line-height: 1.55; }
+.note-heading { font-size: 13px; }
+.requester div > span { font-size: 14px; }
+.ticket-meta { font-size: 12px; }
+.mobile-assignee-name { display: none; }
+@media (min-width: 721px) {
+  tbody tr:nth-child(odd) { background-color: #f4f8ff; }
+  tbody tr:hover { background-color: #edf4ff; }
+  tbody tr.selected-row { background-color: #e4efff; }
+}
+@media (max-width: 720px) {
+  .main-shell { background: #f1f5fb; }
+  .topbar { background: white; }
+  main { padding: 24px 14px; }
+  .page-heading p { font-size: 15px; }
+  tbody { display: grid; gap: 16px; }
+  tbody tr {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px 12px;
+    padding: 14px 16px 16px;
+    border: 1px solid #bdcfe6;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #eaf1fc 0, #eaf1fc 58px, white 58px, white 100%);
+    box-shadow: 0 3px 10px #152c4a08;
+    overflow: hidden;
+  }
+  tbody tr.selected-row, tbody tr:focus-within {
+    border-color: #0655ff;
+    box-shadow: 0 0 0 1px #0655ff;
+  }
+  .id-cell { grid-column: 1; grid-row: 1; align-self: center; }
+  .ticket-id { font-size: 13px; }
+  td[data-label="Status"] { grid-column: 2; grid-row: 1; justify-self: end; align-self: center; }
+  td[data-label="Status"]::before { display: none; }
+  .status-badge { font-size: 12px; padding: 5px 8px; }
+  .ticket-cell { grid-column: 1 / -1; grid-row: 2; padding-top: 10px; }
+  .ticket-link { font-size: 17px; font-weight: 650; line-height: 1.4; }
+  td[data-label="Requester"] { grid-row: 3; }
+  .requester-line { font-size: 16px; }
+  .requester-line > span { font-size: 14px; }
+  td[data-label="Priority"] { grid-column: 1; grid-row: 4; border-top: 1px solid var(--border); padding-top: 12px; }
+  td[data-label="Assignee"] { grid-column: 2; grid-row: 4; border-top: 1px solid var(--border); padding-top: 12px; }
+  td[data-label]::before { font-size: 12px; margin-bottom: 5px; }
+  .priority { font-size: 15px; min-height: 32px; }
+  .assignee { display: flex; align-items: center; gap: 7px; }
+  .assignee-avatar { height: 30px; width: 30px; font-size: 11px; }
+  .mobile-assignee-name { display: inline; font-size: 13px; }
+  .unassigned { font-size: 13px; }
+  tbody td[data-label="Updated"] { display: block; grid-column: 1 / -1; grid-row: 5; }
+  td[data-label="Updated"]::before { display: inline; margin-right: 8px; }
+  td time { font-size: 13px; }
+  .selected-row td:first-child::before { display: none; }
+  .board-footer { font-size: 13px; }
+  .ticket-inspector { background: white; }
 }

@@ -267,6 +267,7 @@ export default function App() {
                             }
                           >
                             {ticket.assignee ? <span className="avatar assignee-avatar" title={ticket.assignee}>{ticket.assignee.split(" ").map(w => w[0]).slice(0, 2).join("")}<span className="sr-only">{ticket.assignee}</span></span> : "Unassigned"}
+                            {ticket.assignee && <span className="mobile-assignee-name" aria-hidden="true">{ticket.assignee}</span>}
                           </span>
                         </td>
                         <td data-label="Updated">
