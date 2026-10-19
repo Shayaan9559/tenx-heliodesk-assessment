@@ -41,7 +41,7 @@ Adding a note and advancing its parent timestamp form one unit. Both must succee
 Do not equate a caught exception with durability. The database commit is the persistence boundary. Refresh/new request proves saved state is read back; local tests inspect a separate session as well.
 
 ## 8. Explain validation and HTTP status codes
-200 reads and ticket updates; 201 appended note; 400 malformed/invalid input; 404 missing ticket; 405 unsupported method; 500 unexpected failure. All handled errors use error.code/message/fields. Field keys match React controls. Body must be an object, enums must be known strings, notes trimmed to 3-500 characters, author 1-80. Client checks help feedback, but direct HTTP requests can bypass them, so backend enforcement is essential.
+200 reads and ticket updates; 201 appended note; 400 malformed/invalid input; 404 missing ticket; 405 unsupported method; 500 unexpected failure. All handled errors use error.code/message/fields. Field keys match React controls. Body must be an object, enums must be known strings, notes containing 3-500 non-whitespace Unicode characters, preserving interior formatting, author 1-80. Client checks help feedback, but direct HTTP requests can bypass them, so backend enforcement is essential.
 
 Missing ticket is checked before payload validation. q is a literal substring: '%' and '_' do not become wildcard operators. ORM parameter binding prevents raw input from becoming SQL. This is not authentication; public demo users can edit synthetic records by design.
 

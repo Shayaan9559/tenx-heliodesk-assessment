@@ -150,3 +150,31 @@ def test_nfr03_new_release_html_never_revalidates_to_obsolete_asset(tmp_path):
     assert updated.status_code == 200
     assert b'/assets/new.js' in updated.data
     assert client.get('/api/health').headers['Cache-Control'] == 'no-store'
+
+
+def test_ac08_non_whitespace_boundaries_and_formatting(client):
+    before = client.get('/api/tickets/HD-1001').json
+    for body in ['a b', 'a\t\nb', '\u00a0\u2003', 'a '*501]:
+        response = client.post('/api/tickets/HD-1001/notes', json={'body':body,'author':'Agent'})
+        assert response.status_code == 400
+        assert client.get('/api/tickets/HD-1001').json == before
+    for body in ['a b\nc', 'a\u00a0b\u2003c', 'a '*499+'a']:
+        response = client.post('/api/tickets/HD-1001/notes', json={'body':body,'author':'Agent'})
+        assert response.status_code == 201
+        assert response.json['notes'][-1]['body'] == body
+        assert client.get('/api/tickets/HD-1001').json == response.json
+
+
+def test_rule4_migration_preserves_existing_sqlite_notes():
+    from sqlalchemy import create_engine, text
+    from app.migrations import migrate_note_length
+    engine = create_engine('sqlite://')
+    with engine.begin() as connection:
+        connection.execute(text('CREATE TABLE note (id INTEGER PRIMARY KEY, ticket_id TEXT, body TEXT CHECK (length(trim(body)) BETWEEN 3 AND 500), author TEXT, created_at TEXT)'))
+        connection.execute(text("INSERT INTO note VALUES (7, 'HD-1001', 'Original note', 'Agent', '2026-10-19')"))
+        assert migrate_note_length(connection)
+        assert connection.execute(text('SELECT * FROM note')).one() == (7, 'HD-1001', 'Original note', 'Agent', '2026-10-19')
+        assert not migrate_note_length(connection)
+        connection.execute(text('INSERT INTO note (id, body) VALUES (8, :body)'), {'body': 'a '*499+'a'})
+        assert connection.execute(text('SELECT count(*) FROM note')).scalar() == 2
+    engine.dispose()

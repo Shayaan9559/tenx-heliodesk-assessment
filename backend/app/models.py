@@ -58,7 +58,7 @@ class Note(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=now)
     ticket = db.relationship('Ticket', back_populates='notes')
     __table_args__ = (
-        db.CheckConstraint('length(trim(body)) BETWEEN 3 AND 500'),
+        db.CheckConstraint('length(trim(body)) >= 3', name='note_body_minimum'),
         db.CheckConstraint('length(trim(author)) BETWEEN 1 AND 80'),
     )
 

@@ -4,6 +4,7 @@ import {
   ApiError,
   date,
   label,
+  noteLength,
   priorities,
   statuses,
   type Priority,
@@ -102,8 +103,8 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
     setFields({});
     if (kind === "note") {
       const invalid: Record<string, string> = {};
-      if (body.trim().length < 3 || body.trim().length > 500)
-        invalid.body = "Enter 3–500 characters after trimming.";
+      if (noteLength(body) < 3 || noteLength(body) > 500)
+        invalid.body = "Enter 3–500 non-whitespace characters.";
       if (!author.trim() || author.trim().length > 80)
         invalid.author = "Enter your name (1–80 characters).";
       if (Object.keys(invalid).length) {
@@ -362,7 +363,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
                       aria-describedby={`note-hint${fields.body ? " body-error" : ""}`}
                     />
                     <span id="note-hint" className="input-hint">
-                      3–500 characters · {body.trim().length}/500
+                      3–500 non-whitespace characters · {noteLength(body)}/500
                     </span>
                     {fields.body && (
                       <span id="body-error" className="field-error">

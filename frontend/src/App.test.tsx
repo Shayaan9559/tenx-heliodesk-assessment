@@ -225,7 +225,7 @@ it("AC-07/08 validates note, posts once while saving, renders canonical history 
   await within(dialog).findByText(ticket.description);
   await user.click(within(dialog).getByRole("button", { name: "Add note" }));
   expect(
-    await within(dialog).findByText("Enter 3–500 characters after trimming."),
+    await within(dialog).findByText("Enter 3–500 non-whitespace characters."),
   ).toBeVisible();
   expect(within(dialog).getByRole("textbox", { name: "Note" })).toHaveAttribute(
     "aria-invalid",
@@ -361,4 +361,24 @@ it("opens ticket details from the requester cell and returns focus to the title"
   await within(dialog).findByText(ticket.description);
   await user.click(within(dialog).getByRole("button", { name: "Close ticket details" }));
   expect(title).toHaveFocus();
+});
+
+
+it("counts note content excluding whitespace and preserves internal formatting", async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await user.click(await screen.findByRole("button", { name: ticket.title }));
+  const panel = screen.getByRole("dialog");
+  await within(panel).findByText(ticket.description);
+  await user.type(within(panel).getByRole("textbox", { name: "Your name" }), "Agent");
+  const note = within(panel).getByRole("textbox", { name: "Note" });
+  await user.type(note, "a b");
+  await user.click(within(panel).getByRole("button", { name: "Add note" }));
+  expect(await within(panel).findByText("Enter 3–500 non-whitespace characters.")).toBeVisible();
+  expect(fetchMock.mock.calls.some(([, options]) => options?.method === "POST")).toBe(false);
+  await user.clear(note);
+  await user.type(note, "a b\nc");
+  expect(within(panel).getByText("3–500 non-whitespace characters · 3/500")).toBeVisible();
+  await user.click(within(panel).getByRole("button", { name: "Add note" }));
+  await waitFor(() => expect(fetchMock.mock.calls.some(([, options]) => options?.method === "POST" && JSON.parse(options.body).body === "a b\nc")).toBe(true));
 });

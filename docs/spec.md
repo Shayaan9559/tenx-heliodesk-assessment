@@ -13,7 +13,7 @@ A support agent needs to find an issue, understand its history, update its lifec
 - FR-05 / AC-05: PATCH status and/or priority atomically, return canonical details, advance updated_at only after commit; persist across refresh.
 - FR-06 / AC-06: reject empty, invalid, unknown-field or wrong-type PATCH with 400 and field errors; leave stored record unchanged.
 - FR-07 / AC-07: append one note per successful POST, with author; update parent timestamp; persist history chronologically.
-- FR-08 / AC-08: trim note/author; reject body outside 3-500 characters, whitespace-only body, or author outside 1-80 characters. Backend is authoritative.
+- FR-08 / AC-08: trim note/author; reject body outside 3-500 non-whitespace characters, whitespace-only body, or author outside 1-80 characters. Backend is authoritative.
 - FR-09 / AC-09: return JSON 404 for missing ticket; details offer Close to return to dashboard.
 - FR-10 / AC-10: distinguish loading, empty database, no results, list failure with Retry, saving, success, field validation, and detail failure.
 - FR-11 / AC-11: cancel stale list requests and guard results with request generation; latest query alone controls displayed data.
@@ -32,7 +32,7 @@ Ticket: unique string ID; title, description, requester name/email; enum status 
 - NFR-05: working deployment required; describe SQLite storage persistence constraints and prove primary workflow on host.
 
 ## Explicit interpretations
-1. Notes use the common trimmed-string length convention (3-500 characters after trimming); interior spaces count. Brief wording “non-whitespace characters” is ambiguous: this interpretation matches its whitespace-only/length rejection examples. Record this as an assumption for reviewers.
+1. Notes contain 3-500 non-whitespace Unicode characters; whitespace does not count toward either limit. Interior spaces and line breaks are preserved; outer whitespace is trimmed. This replaces the original trimmed-length interpretation to follow rule 4 literally.
 2. No-op PATCH with valid fields but unchanged values is accepted and treated as a successful write, advancing updated_at. Empty object is rejected.
 3. Out-of-range page returns [] and truthful metadata; an empty database has totalPages=0. Invalid page/page_size is 400; API defaults page_size=5.
 4. Unknown query keys and unknown body keys are rejected to catch client mistakes. Missing/invalid JSON returns 400.

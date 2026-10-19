@@ -99,8 +99,11 @@ def add_note(ticket_id, payload):
     values = {}
     for field, minimum, maximum in [('body', 3, 500), ('author', 1, 80)]:
         value = payload.get(field)
-        if not isinstance(value, str) or not minimum <= len(value.strip()) <= maximum:
-            errors[field] = f'Must contain {minimum}-{maximum} characters after trimming'
+        # Python split recognizes Unicode whitespace; preserve interior formatting.
+        length = len(''.join(value.split())) if field == 'body' and isinstance(value, str) else len(value.strip()) if isinstance(value, str) else 0
+        if not isinstance(value, str) or not minimum <= length <= maximum:
+            suffix = 'non-whitespace characters' if field == 'body' else 'characters after trimming'
+            errors[field] = f'Must contain {minimum}-{maximum} {suffix}'
         else:
             values[field] = value.strip()
     if errors:

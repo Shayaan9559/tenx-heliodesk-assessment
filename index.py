@@ -5,6 +5,7 @@ if os.getenv('VERCEL'):
 from backend.app import create_app
 from backend.app.models import db
 from backend.app.seed import seed_data
+from backend.app.migrations import migrate_note_length
 from sqlalchemy import text
 
 app = create_app()
@@ -16,4 +17,5 @@ if os.getenv('VERCEL'):
         with db.session.begin():
             db.session.execute(text('SELECT pg_advisory_xact_lock(10421042)'))
             db.metadata.create_all(bind=db.session.connection())
+            migrate_note_length(db.session.connection())
             seed_data(commit=False)

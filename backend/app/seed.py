@@ -39,6 +39,14 @@ def seed_data(commit=True):
 
 
 def register_commands(app):
+    @app.cli.command('migrate-notes')
+    def migrate_notes():
+        """Preserve notes while updating the legacy length constraint."""
+        from .migrations import migrate_note_length
+        with db.engine.begin() as connection:
+            changed = migrate_note_length(connection)
+        click.echo('Note constraint migrated.' if changed else 'Note constraint already current.')
+
     @app.cli.command('init-db')
     def init_db():
         """Create schema without changing existing data."""
