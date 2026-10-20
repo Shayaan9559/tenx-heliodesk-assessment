@@ -12,6 +12,6 @@
 - [x] T11 Explain decisions, AI usage, limitations and submission details (NFR-03).
 - [x] T12 Accessible remote repo and hosted workflow, reviewer access (NFR-05).
 
-All implementation/release tasks completed; live checks recorded in verification.md. Candidate must review the explanation guide and supply actual time spent before sending the submission draft.
+All implementation/release tasks completed; live checks recorded in verification.md. Final technical verification is complete. Personalized submission details remain in the candidate's private draft; sending is a separate candidate action.
 
 - [x] T13 / BONUS-01 / AC-04/05/07: execute the real-browser persistence test, save recording/evidence, document repeatable command and trade-off.

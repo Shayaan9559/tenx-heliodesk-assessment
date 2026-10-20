@@ -2,6 +2,19 @@
 
 Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted results tracked separately and must not be inferred from local tests.
 
+## Final submission audit - 20 October 2026
+Current application source: **70710f7** (subsequent audit commits change documentation only). **17 backend + 12 frontend + 1 browser E2E = 30 tests passed**, with strict TypeScript/Vite build, from a fresh exported checkout and newly installed dependencies. Earlier counts below describe historical runs, not the current total.
+
+- Clean README setup: new venv, pinned pip install, npm ci, build, seeded default SQLite, idempotent seed, root HTML 200 and 12 API records.
+- Anonymous live app/database health, combined queries, priority ordering, out-of-range metadata, invalid pagination, 404 and field validation passed. Invalid note/PATCH requests left the complete ticket/notes unchanged.
+- Hosted PATCH survived an independent GET; original status/priority restored after the check. No note was appended during this final audit.
+- Public GitHub repository, docs and walkthrough PDF returned 200 without account credentials.
+- Chrome live desktop and 320px: keyboard search, Enter opens details, rule-4 field error/counter, focus on Note, Escape returns to original ticket trigger, query retained, Reset recovers list. documentWidth=innerWidth=320; dialog clientWidth=scrollWidth=319.
+- Current navy/cobalt contrast tokens replace the obsolete green-theme evidence; all selected core pairs exceed 4.5:1. See evidence/contrast.md.
+- Tracked-source hygiene: no actual secrets, databases, virtual environments, node_modules or generated app builds found. .env.example contains only placeholder connection syntax. Intentional evidence images/video/PDF are included.
+- Known limits: Chrome-focused manual checks, one Chromium desktop E2E, no full screen-reader/load/security audit, provider cold starts; SQLite locally and Postgres hosted. Demo history includes labelled verification notes, including one short note created before the literal rule-4 revision; the current API rejects that input.
+- Personalized submission details are held privately. This technical audit does not send the submission email.
+
 ## Executed automated checks
 - `cd backend && ../.venv/bin/pytest -q`: **15 passed** after Postgres support was added; isolated temporary SQLite database per test.
 - `npm test --prefix frontend`: **9 passed** after design refinement (Vitest 4.1.12, React Testing Library).

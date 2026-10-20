@@ -25,7 +25,7 @@ At a Vercel cold start, a transaction-scoped Postgres advisory lock serializes c
 6. Verify app URL without account credentials; do not leave reviewer access blocked by deployment protection.
 
 ## Known scope/operational limits
-No authentication per brief; use synthetic assessment data only. Public demo writes are intentional. Free services can pause or cold-start. No automatic migration system, concurrent-edit detection or idempotency key protocol is claimed. Supabase and SQLite differ in case-insensitive Unicode behavior; ASCII seeded search is covered. Hosted Postgres must be integration-tested before claiming hosted success.
+No authentication per brief; use synthetic assessment data only. Public demo writes are intentional. Free services can pause or cold-start. A narrowly scoped, idempotent rule-4 constraint migration runs under the initialization lock; a general versioned migration framework, concurrent-edit detection and idempotency key protocol are not claimed. Supabase and SQLite differ in case-insensitive Unicode behavior; ASCII seeded search is covered. Hosted Postgres must be integration-tested before claiming hosted success.
 
 `render.yaml` remains an optional **unprovisioned paid** SQLite persistent-volume alternative; no charges were authorized. It is not the selected deployment.
 

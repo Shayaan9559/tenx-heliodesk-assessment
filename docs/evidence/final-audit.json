@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-20",
+  "application_commit": "70710f7",
+  "clean_checkout": "fresh git archive, fresh venv/pip install and npm ci",
+  "backend_tests": 17,
+  "frontend_tests": 12,
+  "e2e_tests": 1,
+  "total_tests": 30,
+  "build": "Pass",
+  "seed": "12 records, idempotent",
+  "npm_audit": "0 vulnerabilities reported during npm ci",
+  "mobile": "Chrome 320px document width; dialog clientWidth=scrollWidth=319",
+  "public_checks": [
+    {
+      "check": "Anonymous health/database probe",
+      "result": "Pass"
+    },
+    {
+      "check": "Default five results and 12 records",
+      "result": "Pass"
+    },
+    {
+      "check": "Combined query",
+      "result": "Pass"
+    },
+    {
+      "check": "Priority ranking",
+      "result": "Pass"
+    },
+    {
+      "check": "Invalid PATCH field response",
+      "result": "Pass"
+    },
+    {
+      "check": "Rule 4: two non-whitespace characters rejected",
+      "result": "Pass"
+    },
+    {
+      "check": "Invalid requests preserve record and notes",
+      "result": "Pass"
+    },
+    {
+      "check": "Hosted PATCH persists through independent GET",
+      "result": "Pass"
+    },
+    {
+      "check": "Original ticket status/priority restored",
+      "result": "Pass"
+    },
+    {
+      "check": "/api/tickets/missing",
+      "result": "Pass"
+    },
+    {
+      "check": "/api/tickets?page=0",
+      "result": "Pass"
+    },
+    {
+      "check": "Out-of-range page metadata",
+      "result": "Pass"
+    },
+    {
+      "check": "Repository public without credentials",
+      "result": "Pass"
+    },
+    {
+      "check": "Public GitHub root",
+      "result": "Pass"
+    },
+    {
+      "check": "Public GitHub /blob/main/docs/HelioDesk-Assessment-Walkthrough.pdf",
+      "result": "Pass"
+    },
+    {
+      "check": "Public GitHub /tree/main/docs",
+      "result": "Pass"
+    },
+    {
+      "check": "Live frontend bundle",
+      "result": "Pass"
+    }
+  ],
+  "secret_scan": "No actual credentials found in tracked text; .env.example match reviewed as placeholder"
+}

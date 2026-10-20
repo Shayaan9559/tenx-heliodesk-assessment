@@ -1,0 +1,70 @@
+[
+  {
+    "check": "Anonymous health/database probe",
+    "result": "Pass"
+  },
+  {
+    "check": "Default five results and 12 records",
+    "result": "Pass"
+  },
+  {
+    "check": "Combined query",
+    "result": "Pass"
+  },
+  {
+    "check": "Priority ranking",
+    "result": "Pass"
+  },
+  {
+    "check": "Invalid PATCH field response",
+    "result": "Pass"
+  },
+  {
+    "check": "Rule 4: two non-whitespace characters rejected",
+    "result": "Pass"
+  },
+  {
+    "check": "Invalid requests preserve record and notes",
+    "result": "Pass"
+  },
+  {
+    "check": "Hosted PATCH persists through independent GET",
+    "result": "Pass"
+  },
+  {
+    "check": "Original ticket status/priority restored",
+    "result": "Pass"
+  },
+  {
+    "check": "/api/tickets/missing",
+    "result": "Pass"
+  },
+  {
+    "check": "/api/tickets?page=0",
+    "result": "Pass"
+  },
+  {
+    "check": "Out-of-range page metadata",
+    "result": "Pass"
+  },
+  {
+    "check": "Repository public without credentials",
+    "result": "Pass"
+  },
+  {
+    "check": "Public GitHub root",
+    "result": "Pass"
+  },
+  {
+    "check": "Public GitHub /blob/main/docs/HelioDesk-Assessment-Walkthrough.pdf",
+    "result": "Pass"
+  },
+  {
+    "check": "Public GitHub /tree/main/docs",
+    "result": "Pass"
+  },
+  {
+    "check": "Live frontend bundle",
+    "result": "Pass"
+  }
+]

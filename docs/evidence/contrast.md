@@ -1,18 +1,17 @@
-# Core text contrast spot checks
+# Current navy/cobalt contrast spot checks
 
-Calculated WCAG relative luminance ratios for selected final design tokens. This is a focused spot check, not a full automated accessibility audit.
+Verified 20 October 2026 against the live app computed colors. WCAG relative luminance calculation; these are selected core text/control tokens, not a full screen-reader or accessibility audit. Supersedes the original green-theme check.
 
-| Element | Foreground | Background | Ratio | Normal-text AA (4.5:1) |
+| Element | Foreground | Background | Ratio | AA normal text |
 |---|---|---|---|---|
-| Body | #253a2d | #fffefb | 12.09:1 | Pass |
-| Muted text | #586b5d | #f6f7f2 | 5.31:1 | Pass |
-| Ticket title | #2a402e | #fffefb | 11.13:1 | Pass |
-| Open | #346446 | #eaf2e8 | 6.01:1 | Pass |
-| In progress | #3b5d83 | #edf2f9 | 6.06:1 | Pass |
-| Waiting | #79551b | #faf1d9 | 5.96:1 | Pass |
-| Resolved | #5b645b | #eff2ec | 5.44:1 | Pass |
-| Urgent | #a44438 | #fffefb | 6.01:1 | Pass |
-| High | #9a5b16 | #fffefb | 5.36:1 | Pass |
-| Medium | #6b6d36 | #fffefb | 5.39:1 | Pass |
-| Low | #66796d | #fffefb | 4.61:1 | Pass |
-| Primary button | #ffffff | #225c46 | 7.81:1 | Pass |
+| Body | #091b40 | #ffffff | 16.90:1 | Pass |
+| Secondary text | #506584 | #ffffff | 5.94:1 | Pass |
+| Mobile secondary | #506584 | #f1f5fb | 5.43:1 | Pass |
+| Ticket title | #071b40 | #ffffff | 16.94:1 | Pass |
+| Selected row title | #071b40 | #e4efff | 14.59:1 | Pass |
+| Open | #344969 | #e9edf3 | 7.76:1 | Pass |
+| In progress | #0052ec | #d6e6ff | 4.86:1 | Pass |
+| Waiting | #785000 | #fff0ca | 6.30:1 | Pass |
+| Resolved | #13734e | #dcf5e8 | 5.09:1 | Pass |
+| Primary button | #ffffff | #0655ff | 5.60:1 | Pass |
+| Refresh | #344b6c | #ffffff | 8.86:1 | Pass |
