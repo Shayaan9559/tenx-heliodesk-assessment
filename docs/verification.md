@@ -1,26 +1,23 @@
 # Verification evidence
 
-Date: 19 October 2026. Local macOS, Python 3.11, Node 20.19.0, Chrome. Hosted results tracked separately and must not be inferred from local tests.
+## Current release audit — 20 October 2026
 
-## Final submission audit - 20 October 2026
-Current application source: **70710f7** (subsequent audit commits change documentation only). **17 backend + 12 frontend + 1 browser E2E = 30 tests passed**, with strict TypeScript/Vite build, from a fresh exported checkout and newly installed dependencies. Earlier counts below describe historical runs, not the current total.
+Application source: **9364940**.
 
-- Clean README setup: new venv, pinned pip install, npm ci, build, seeded default SQLite, idempotent seed, root HTML 200 and 12 API records.
-- Anonymous live app/database health, combined queries, priority ordering, out-of-range metadata, invalid pagination, 404 and field validation passed. Invalid note/PATCH requests left the complete ticket/notes unchanged.
-- Hosted PATCH survived an independent GET; original status/priority restored after the check. No note was appended during this final audit.
-- Public GitHub repository, docs and walkthrough PDF returned 200 without account credentials.
-- Chrome live desktop and 320px: keyboard search, Enter opens details, rule-4 field error/counter, focus on Note, Escape returns to original ticket trigger, query retained, Reset recovers list. documentWidth=innerWidth=320; dialog clientWidth=scrollWidth=319.
-- Current navy/cobalt contrast tokens replace the obsolete green-theme evidence; all selected core pairs exceed 4.5:1. See evidence/contrast.md.
-- Tracked-source hygiene: no actual secrets, databases, virtual environments, node_modules or generated app builds found. .env.example contains only placeholder connection syntax. Intentional evidence images/video/PDF are included.
-- Known limits: Chrome-focused manual checks, one Chromium desktop E2E, no full screen-reader/load/security audit, provider cold starts; SQLite locally and Postgres hosted. Demo history includes labelled verification notes, including one short note created before the literal rule-4 revision; the current API rejects that input.
-- Personalized submission details are held privately. This technical audit does not send the submission email.
+Environment: macOS arm64, Python 3.11, Node 26.8.1, Chrome; automated browser test uses Playwright Chromium. **17 backend + 12 frontend + 1 E2E = 30 passing tests.** Strict TypeScript/Vite production build passes. Commands are in [README](../README.md). Results below distinguish local testing from hosted checks.
 
-## Executed automated checks
-- `cd backend && ../.venv/bin/pytest -q`: **15 passed** after Postgres support was added; isolated temporary SQLite database per test.
-- `npm test --prefix frontend`: **9 passed** after design refinement (Vitest 4.1.12, React Testing Library).
-- `npm run build --prefix frontend`: strict TypeScript and Vite production build passed.
-- `npm audit` from frontend: **0 known vulnerabilities** after upgrading development tooling; runtime and full audit checked. This is a point-in-time dependency check, not a security guarantee.
-- Clean fresh database + built asset smoke check: factory, create schema/seed, root HTML 200, 12 tickets, PATCH 200, GET saved priority passed. Full clean committed-source checkout also completed: fresh venv/pinned pip install, npm ci, 14 backend tests, 9 frontend tests, production build, seed then idempotent seed all passed.
+### Reproducible setup and automated verification
+A fresh export of committed source was installed in a separate directory with a new virtual environment, pinned Python dependencies and `npm ci`. README setup created a clean SQLite database with 12 tickets. Running seed again preserved the records; explicit reset rebuilt the deterministic seed. Root HTML and API returned 200. Dependency audit reported zero known npm vulnerabilities at the time of checking.
+
+After the final responsive corrections, all three suites and the production build were rerun. Backend tests use isolated SQLite databases; frontend behavior tests exercise the HTTP boundary with controlled responses. The real-browser E2E uses built React, actual Flask HTTP requests and a newly seeded temporary SQLite file, with no application mocks or hosted credentials.
+
+| Command from repository root | Result |
+|---|---|
+| `cd backend && ../.venv/bin/pytest -q` | 17 passed |
+| `npm test --prefix frontend` | 12 passed |
+| `npm run test:e2e --prefix frontend` | Build passed; 1 Chromium test passed |
+
+Backend coverage includes combined queries, priority/title order, pagination, missing tickets, invalid payloads, literal search/query safety, successful persistence, exact note boundaries, failed-write rollback, foreign keys, deterministic seed/reset, cache behavior and preservation of notes during migration. Frontend coverage includes query/page reset, loading/empty/no-results/error/Retry, canonical saves, field feedback, duplicate prevention, draft preservation, missing details, stale responses, row activation and focus restoration.
 
 ## Acceptance criteria
 | ID | Local result | Evidence |
@@ -38,65 +35,36 @@ Current application source: **70710f7** (subsequent audit commits change documen
 | AC-11 | Pass | deferred fetch test resolves newest first and older later while transport ignores abort; old data cannot overwrite |
 | AC-12 | Pass | Live Chrome 320px keyboard search/status/priority filters, open/edit/save, note entry, blank-note validation recovery, Escape and useful return focus. documentWidth=320; drawer clientWidth=scrollWidth=319. Core contrast spot checks pass; full screen-reader audit outside recorded coverage. |
 
-## Browser observations
-- Initial UI loaded real Flask data; no frontend imported dataset or localStorage.
-- Combined query found HD-1001 and HD-1009 before test edits.
-- Updating HD-1001 to in_progress/high, then adding a note and reloading, preserved both. Subsequent mobile checks saved priority urgent and another note.
-- At 320px, dashboard cards and drawer had no page-level horizontal overflow. Temporary viewport restored afterward.
-- Validation without author retained note text and showed an author field error; filling author then keyboard-submit saved it.
-- Core text/status/button contrast spot checks all exceed 4.5:1; see docs/evidence/contrast.md. Screenshots in docs/evidence show desktop, mobile and drawer. These will be refreshed after final visual checks.
+## Manual browser and accessibility evidence
 
-## API contract checks
-Real Flask test client exercises all five endpoints, success statuses 200/201, 400 envelope, 404 and 405, literal search, sort/pagination, seed/reset and unexpected 500 rollback. `docs/api.md` includes executable curl examples. Native JSON malformed input is deliberately 400. Request size above 16KiB returns handled JSON 413 (operational limit).
+Chrome desktop and 320px checks exercised real Flask data, combined trimmed search/status/priority controls, native keyboard selection, opening details, editing, saving, note entry, validation correction and Escape. No frontend dataset or localStorage source of truth is used. Saved changes/notes remained after refresh. Validation preserved input and moved focus to the affected field. Successful edit/note saves focused Status/Note respectively. Closing returned focus to the ticket trigger; if a refreshed query removed that trigger, the queue heading was the fallback.
 
-## Hosted verification — 19 October 2026
-- Vercel deployment succeeded at https://tenx-heliodesk-assessment.vercel.app with Flask runtime and built React assets.
-- Anonymous HTTP checks passed: health 200, default five results and accurate metadata, trimmed mixed-case combined query, priority ordering, successful PATCH followed by independent GET, invalid PATCH 400 with unchanged record, POST note 201 followed by independent GET, blank-note rejection without mutation, 404 and invalid pagination 400.
-- Smoke check used HD-1001, appended one clearly labeled verification note and restored its original status/priority. Every request crossed the public Vercel URL into Flask and Supabase; this was not an in-process mock.
-- Chrome independently loaded all 12 tickets and combined ' ALEX '/open/high produced HD-1001 and HD-1009. Chrome saved HD-1002 priority=high and appended a note, then a full browser reload/detail fetch retained both. Native keyboard selection of waiting_on_customer and Save succeeded at 320px. A lost-focus issue after save was found and corrected, with frontend focus assertions passing; post-deployment checks confirmed focus returns to Status after edit and Note after note save; validation focuses the invalid Note field.
-- Public GitHub API confirmed the repository is public; no reviewer login is needed for source. Public API verification also required no Vercel account/session, confirming primary reviewer access.
+At 320px, document scrollWidth equalled innerWidth (320); dialog scrollWidth equalled clientWidth (319). Mobile cards have distinct borders, spacing and tinted headers. At desktop widths details are modeless so the queue remains interactive; below 1200px a native modal contains focus. The final regression also checks that last-updated time remains visible in the 900px compact table, 1440px split view and 320px cards, without page-level horizontal overflow.
 
-## Remaining scope limits
-No Safari/Firefox or full screen-reader certification performed. No production load/security audit claimed. Authentication is intentionally absent per brief and records are synthetic. Free provider cold starts remain possible. Total candidate time must be supplied honestly by the candidate; no invented duration.
+Current navy/cobalt text/status/button contrast spot checks exceed 4.5:1: [measurements](evidence/contrast.md). Status and priority have text labels as well as color. [Desktop](evidence/final-live-desktop.png), [mobile](evidence/final-live-mobile.png), [field validation](evidence/final-mobile-validation.png).
 
-## Release regressions corrected
-- Native keyboard focus after disabling Save: focus returns to first invalid field or relevant status/note control; frontend focus assertions pass.
-- Normalized static-file mtimes on Vercel could revalidate obsolete index.html. HTML now ignores conditional validators and is no-store; a new backend regression test passed. Final backend total: 15; frontend total: 9. Both corrections are covered by behavioral assertions rather than implementation-only checks.
+### Manual Retry recovery
+An isolated local verification wrapper returned a documented-shape HTTP 503 for GET /api/tickets while a temporary outage flag existed. Chrome showed the request-error state. After removing the flag, keyboard Enter on Retry loaded five rows and total 12 without navigation/reload. This verified HTTP failure recovery, rather than physically disconnecting the network. The temporary hook was outside the repository, never deployed and removed afterward. [Error](evidence/retry-error.png), [recovered](evidence/retry-recovered.png). AC-10 Pass, manual and automated.
 
-## Final browser release checks
-- Latest code loaded successfully after the cache correction; anonymous root response is 200, Cache-Control: no-store, with no HTML ETag or Last-Modified validator.
-- Supabase browser note and ticket state remained present after two code redeploys, proving storage is not tied to the serverless filesystem.
-- At 320px, native keyboard Space/type-letter/Return selected status and priority controls. Search ' ALEX ', open and high yielded two correct rows; UI query values confirmed open/high/updated_at/desc.
-- Keyboard ticket Save succeeded. Updated focus remained inside the drawer on Status. Tab traversal reached note author/body/Add note; keyboard submission saved history and focused Note.
-- Empty note validation focused Note; keyboard correction and resubmission succeeded. Escape closed the drawer and focused the dashboard heading when its original trigger was temporarily absent during list refresh.
-- Final mobile document scrollWidth=innerWidth=320; dialog scrollWidth=clientWidth=319. Viewport override was restored.
-- Evidence: live-dashboard.jpg, live-desktop-dialog.jpg, live-mobile-dashboard.jpg and live-mobile-dialog.jpg.
+## API contract and hosted verification
 
+All five endpoints are exercised by the Flask test client, including 200/201, 400 field envelopes, 404, 405 and unexpected 500 rollback/error safety. Malformed JSON returns 400; the documented 16KiB operational request limit returns JSON 413. [API contract and executable curl examples](api.md).
 
-## Selected navy and cobalt redesign (19 October 2026)
-The candidate selected the Precision Pro visual concept. Custom CSS now uses a midnight navy rail, cobalt actions/selection, white surfaces, compact typography and separate ID/title/requester columns. Assignee initials retain full names in accessible text and tooltips. At 1200px and above, details use a modeless native dialog beside the queue so the list stays interactive. Below 1200px the same component uses showModal for native focus containment; breakpoint changes reopen the appropriate presentation. Escape/close restore the original trigger, and existing save/error focus behavior is retained. Mobile renders ticket cards with no horizontal overflow at 320px. Search, combined filters, both sort controls, pagination, validation and server persistence are retained.
+Anonymous live checks verified health, five-row list/metadata, trimmed combined query, priority ordering, out-of-range page, invalid pagination, missing ticket and invalid edit/note responses. Invalid requests left the complete ticket and notes unchanged. Hosted PATCH persisted through an independent GET and original status/priority were restored. Earlier browser note checks persisted through refresh and redeployment; no note was appended during the final hosted audit. [Hosted results](evidence/final-live-results.json).
 
-Verification: 15 backend tests and 10 frontend behavior tests, including the new modeless inspector/Escape/focus regression, plus strict TypeScript/Vite production build. Chrome checked the real local 320px queue/details and desktop split view.
+The repository, application, API and walkthrough PDF were accessible without login. HTML is no-store without conditional validators; content-hashed assets can cache immutably. API responses are no-store. The tracked-source scan found no real secrets, dependency directories, database files or generated app builds; `.env.example` is placeholder-only. Evidence media/PDF are intentional deliverables. [Audit record](evidence/final-audit.json).
 
-## Rule 4 literal whitespace counting revision
-17 backend and 12 frontend tests pass (29 total); strict TypeScript/Vite build passes. New regression cases reject two visible characters separated by whitespace, reject 501 non-whitespace characters, accept 3 and 500 with interior spaces/newlines/Unicode whitespace, retain note formatting and failed-write state, and preserve existing SQLite note data through an idempotent constraint migration. React counter and validation exclude whitespace with the same Unicode set as Python. Existing local databases use migrate-notes; hosted Postgres migrates under the initialization lock.
+## BONUS-01 — one automated E2E test
 
-## Completed manual Retry recovery — 19 October 2026
-Chrome on macOS, desktop viewport 1470px. An isolated local Flask verification wrapper at 127.0.0.1:5057 served the current built React assets and normal SQLite-backed service. A temporary before_request hook returned a documented-shape HTTP 503 for GET /api/tickets while a local outage flag existed. This hook was outside the repository and never deployed.
+The test opens HD-1001, saves in_progress/urgent, appends a note, reloads/reopens and asserts persisted values/history. An independent GET verifies exactly one added note. Its final responsive assertions also check timestamp visibility and overflow. [Source](../frontend/e2e/ticket-persistence.spec.ts), [recorded persistence run](evidence/e2e-persistence.webm), [recorded result](evidence/e2e-result.json), [screenshot](evidence/e2e-persisted-ticket.png). Evidence recordings and the PDF are dated snapshots; fresh runs produce ignored HTML reports, trace ZIP, video and screenshots under frontend/playwright-report and frontend/test-results.
 
-1. Opened the app with the API outage active. Chrome displayed “We couldn’t load your tickets”, the temporary outage message, and a working Retry button.
-2. Removed the outage flag while keeping the same browser page and server running. No page reload or navigation was used.
-3. Activated Retry with Enter. React displayed its loading state and made a fresh HTTP request.
-4. The normal API response restored five ticket rows and “Showing 1–5 of 12 matching tickets”.
-5. Saved before/after screenshots: [error](evidence/retry-error.png) and [recovered](evidence/retry-recovered.png). Stopped the temporary server afterward.
+Only the E2E bonus option is claimed. Trade-off: a browser download and slower startup for repeatable cross-stack persistence evidence. It is one critical-path Chromium test, not complete cross-browser or hosted-Postgres coverage. Bonus scoring remains the hiring team's decision.
 
-Result: **AC-10 Pass, manual and automated**. This completes the earlier interrupted browser check. The controlled failure reproduces an HTTP server error, rather than physically disconnecting the network. No application changes were required.
+## Known limitations and scope
 
-## BONUS-01: recorded automated end-to-end persistence test
-**Pass — 19 October 2026.** `npm run test:e2e --prefix frontend`: **1 passed (3.9s)**, zero retries. Playwright 1.64.1, Chromium headless shell 156.0.8078.4, macOS arm64, Node 26.8.1, Python 3.11. Existing suite: 17 backend + 12 frontend tests passed; production TypeScript/Vite build passed. Total: **30 automated tests** across the three suites.
-
-The built React app contacted real Flask over HTTP with an isolated freshly seeded SQLite database. The browser opened HD-1001, saved in_progress/urgent, appended a note, reloaded and reopened the ticket, and asserted the saved status, priority and note. An independent GET confirmed exactly one matching note. No HTTP mocks, hosted credentials or development data were used.
-
-Evidence: [recording](evidence/e2e-persistence.webm), [saved ticket screenshot](evidence/e2e-persisted-ticket.png), [machine-readable result](evidence/e2e-result.json). Each fresh run also generates an ignored HTML report, trace ZIP, screenshot and video in frontend/playwright-report and frontend/test-results. Commands and setup are in README.
-
-Only the automated E2E option is claimed for optional bonus. Trade-off: extra browser installation and slower startup in exchange for repeatable cross-stack persistence evidence. This is one critical-path desktop Chromium test, not full cross-browser or hosted-Postgres coverage. The first invocation preceded completion of the browser download and could not launch; after installation, the recorded run passed without retries. Bonus points remain the hiring team's decision.
+- SQLite is the default local/assessment database. Vercel lacks durable SQLite storage, so hosted writes use server-only Supabase Postgres through the same Flask service. This deployment choice and reproducible SQLite setup are explicit in [deployment.md](deployment.md).
+- Chrome-focused manual checks and one Chromium E2E; Safari/Firefox, full screen-reader, load and security audits were not performed. No claim of formal accessibility certification.
+- Authentication and ticket creation are excluded by scope. Data is synthetic and the public demo is editable; provider cold starts may occur.
+- Demo history includes labelled verification notes, including one short note saved before the literal rule-4 correction. Existing append-only history was preserved; the current API rejects that input. No known current validation bypass is claimed.
+- SQLite lower() supplies ASCII case-insensitivity; international Unicode case folding is not implemented.
+- The six-page PDF records the 19 October walkthrough. This document records the newer final audit and corrections. Personalized effort and correspondence stay in the submission email.

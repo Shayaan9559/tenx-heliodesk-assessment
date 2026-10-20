@@ -8,6 +8,7 @@ A support ticket workspace built for the Tenx full-stack assessment using Flask,
 - [Specification](docs/spec.md), [API contract](docs/api.md), [architecture plan](docs/plan.md), [tasks](docs/tasks.md), [verification](docs/verification.md).
 - [Engineering explanations and interview walkthrough](docs/engineering-notes.md).
 - [Deployment and limitations](docs/deployment.md).
+- [Final brief compliance map](docs/compliance.md).
 - Source: `backend/app`, `frontend/src`; tests: `backend/tests`, `frontend/src/App.test.tsx`.
 
 ## Prerequisites
@@ -74,7 +75,7 @@ OpenAI Codex was used to interpret the brief, draft the specification/API/plan, 
 
 Corrected output: the initial generated form nested validation text inside labels, which changed accessible input names once an error appeared. Failing frontend tests exposed it; stable accessible labels corrected it, and the tests then passed. Initial development-tool versions were also rejected after audit findings and upgraded to audited versions. The note-save behavior deliberately preserves unsaved status/priority drafts and is covered by a behavior test.
 
-Verification: isolated pytest HTTP/database tests, React Testing Library user-event tests at the HTTP boundary, strict TypeScript production build, real Chrome integration/persistence/320px/modal checks, and a clean setup check. Results and honest gaps are recorded in docs/verification.md. Do not claim independent manual authorship or unperformed checks.
+Verification: isolated pytest HTTP/database tests, React Testing Library user-event tests at the HTTP boundary, strict TypeScript production build, real Chrome integration/persistence/320px/modal checks, and a clean setup check. Results and honest gaps are recorded in docs/verification.md. The work is AI-assisted; the evidence distinguishes executed checks from unperformed audits.
 
 ## Rule 4 note length clarification
 Notes require 3-500 non-whitespace Unicode characters. Interior spaces/newlines are stored but do not count; outer whitespace is trimmed. Author remains 1-80 trimmed characters. React and Flask apply matching counts. The database provides a coarse minimum constraint; the service enforces the exact Unicode count. For an existing local database created before this revision, run `../.venv/bin/flask --app app migrate-notes` from backend before starting. Fresh setup needs no migration. Hosted Postgres migrates under the existing initialization lock, preserving notes.

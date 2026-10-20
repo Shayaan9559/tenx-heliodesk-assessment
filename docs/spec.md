@@ -38,12 +38,12 @@ Ticket: unique string ID; title, description, requester name/email; enum status 
 4. Unknown query keys and unknown body keys are rejected to catch client mistakes. Missing/invalid JSON returns 400.
 5. Search uses SQLite lower() semantics (ASCII case-insensitivity); international Unicode case folding is a documented limitation.
 6. Cancel or Escape discards unsaved changes; note author is entered explicitly because authentication is excluded.
-7. Same-origin production serves React from Flask; Vite proxies /api in development. No CORS widening required.
+7. Same-origin production serves built React through Vercel and /api through Flask; Vite proxies /api in development. No CORS widening required.
 8. On a mutation, reload the current list and retain query/page; if the changed ticket leaves a filter, it disappears. If page becomes invalid, move to the last valid page.
 9. Repeated query parameters are rejected; no multi-select semantics. Note author/body must be strings; null and arrays are invalid.
 
 ## Out of scope
-Ticket creation/deletion, login/roles, email, uploads, WebSockets, microservices, queues, production infrastructure and simultaneous-edit conflict resolution. SQLite supports a single-instance assessment deployment; production scaling is not claimed.
+Ticket creation/deletion, login/roles, email, uploads, WebSockets, microservices, queues, production infrastructure and simultaneous-edit conflict resolution. SQLite is used for local development and assessment tests; the hosted persistence choice is documented below. Production scaling is not claimed.
 
 ## Acceptance criteria
 AC-01 through AC-12 have the exact behaviors above and must receive Pass/Partial/Fail/Not Tested in verification.md. An app is complete only after local behavior, evidence, clean setup and live primary workflow have been checked. Optional bonus: one browser end-to-end test if required scope is stable.
@@ -53,6 +53,8 @@ AC-01 through AC-12 have the exact behaviors above and must receive Pass/Partial
 - Hosted database update (user-approved): Vercel frontend + Flask function use dedicated Supabase Postgres for durable data; SQLite remains mandatory default local/test engine. SQLAlchemy keeps service/model behavior shared. NFR-05 now requires persistent hosted writes rather than the earlier ephemeral demo fallback. No Supabase browser client or public Data API is used; all reads/writes still pass through Flask.
 - Accessibility refinement during live Chrome verification: after a save completes, focus moves to the first invalid field or the relevant status/note control; prevents lost keyboard position after disabling the submit button. FR-12/AC-12; added focus assertions to existing frontend behavior tests.
 - Release verification refinement: NFR-03 requires index.html to bypass conditional caching, while content-hashed assets may use immutable caching. A redeploy with normalized mtimes exposed stale HTML referencing removed assets; a backend regression test now reproduces that failure mode. API results use no-store to keep data refreshes authoritative.
+
+- Final responsive audit: retain last-updated time beneath each title when compact table layouts hide the dedicated column; use an unavailable count label during list failures. FR-01/10/12, AC-01/10/12.
 
 ## Selected optional bonus
 BONUS-01: One repeatable automated browser E2E test traverses React -> HTTP -> Flask -> isolated SQLite -> response -> browser reload. Covers AC-04, AC-05 and AC-07 with a saved status/priority and exactly one appended note. Only this optional bonus is selected.

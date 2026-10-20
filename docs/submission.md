@@ -12,6 +12,7 @@ The frontend and Flask API share the application domain. Source, application and
 
 ## Included deliverables
 - [README](../README.md): prerequisites, setup, seed/reset, run/test commands, architecture, configuration, deployment, limitations and AI usage.
+- [Final brief compliance map](compliance.md).
 - [Specification](spec.md), [API contract](api.md), [implementation plan](plan.md), [task mapping](tasks.md) and [verification evidence](verification.md).
 - Flask source and isolated database tests in `backend/app` and `backend/tests`.
 - React source and behavior tests in `frontend/src`.
