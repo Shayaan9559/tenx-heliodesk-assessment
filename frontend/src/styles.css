@@ -1150,3 +1150,12 @@ td time { font-size: 12px; }
 .refresh-button svg { width: 15px; height: 15px; stroke-width: 1.8; }
 .refresh-button:hover:not(:disabled) { background: #f2f6fc; border-color: #b8c9df; color: #0655ff; }
 .refresh-button:active:not(:disabled) { background: #e7effb; }
+
+/* Keep the required timestamp visible when compact tables hide its column. */
+.ticket-updated-inline { display: none; margin-top: 6px; color: #506787; font-size: 12px; line-height: 1.5; }
+@media (min-width: 721px) and (max-width: 1000px) {
+  .ticket-updated-inline { display: block; }
+}
+@media (min-width: 1200px) {
+  .has-selection .ticket-updated-inline { display: block; }
+}

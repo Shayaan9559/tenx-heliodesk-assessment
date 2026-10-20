@@ -5,6 +5,7 @@ test('AC-04/05/07: real browser saves ticket and note, then reloads persisted da
   await page.goto('/');
   await expect(page.getByText('Showing 1–5 of 12 matching tickets', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Unable to access billing dashboard', exact: true }).click();
+  await expect(page.locator('.selected-row .ticket-updated-inline')).toBeVisible();
   let panel = page.getByRole('dialog');
   await expect(panel.getByRole('combobox', { name: 'Status', exact: true })).toHaveValue('open');
   await panel.getByRole('combobox', { name: 'Status', exact: true }).selectOption('in_progress');
@@ -29,6 +30,15 @@ test('AC-04/05/07: real browser saves ticket and note, then reloads persisted da
   expect(saved.status).toBe('in_progress');
   expect(saved.priority).toBe('urgent');
   expect(saved.notes.filter((entry: { body: string }) => entry.body === note)).toHaveLength(1);
+  await panel.getByRole('button', { name: 'Close ticket details', exact: true }).click();
+  for (const width of [900, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    const firstRow = page.locator('tbody tr').first();
+    await expect(firstRow.locator(width === 900 ? '.ticket-updated-inline' : 'td[data-label="Updated"]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.getByRole('button', { name: 'Unable to access billing dashboard', exact: true }).click();
   await panel.getByRole('textbox', { name: 'Note', exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: test.info().outputPath('persisted-ticket.png'), fullPage: true });
 });

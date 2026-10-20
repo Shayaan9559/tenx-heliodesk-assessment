@@ -89,7 +89,7 @@ export default function App() {
         <main id="main">
           <section className="page-heading">
             <h1>Ticket workspace</h1>
-            <p>{loading ? "Syncing your tickets…" : `${total} ${filtered ? "matching tickets" : "tickets across all channels"}`}</p>
+            <p>{loading ? "Syncing your tickets…" : error ? "Tickets unavailable" : `${total} ${filtered ? "matching tickets" : "tickets across all channels"}`}</p>
           </section>
           <section className="ticket-board" aria-labelledby="board-title">
             <h2 id="board-title" className="sr-only" tabIndex={-1}>All tickets</h2>
@@ -234,6 +234,7 @@ export default function App() {
                           >
                             {ticket.title}
                           </button>
+                          <time className="ticket-updated-inline" dateTime={ticket.updated_at} title={ticket.updated_at}>Updated {date(ticket.updated_at)}</time>
                         </td>
                         <td data-label="Requester"><span className="requester-line">
                             {ticket.requester_name}
