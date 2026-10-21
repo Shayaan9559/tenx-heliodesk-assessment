@@ -20,7 +20,7 @@ Priority = low | medium | high | urgent.
 
 List params: q optional trimmed string, across ID/title/requester_name/requester_email, literal substring (%, _ treated literally); status/priority optional exact enums; sort=updated_at|priority|title default updated_at; order=asc|desc default desc; page positive integer default 1; page_size integer 1-20 default 5. Search/filter/sort before pagination. Priorities sort low < medium < high < urgent. ID ascending tie-breaker. Out-of-range page empty with accurate metadata; empty totalPages=0. Blank q means no search; blank enum is invalid (omit instead).
 
-PATCH rejects missing/non-object JSON, {}, unknown fields, null/wrong-type/unknown enums. All transitions allowed. Valid no-op writes update timestamp. POST trims body and author, checks body 3-500 non-whitespace Unicode characters and author 1-80 trimmed characters, rejects unknown or missing fields. Failed validation changes neither ticket nor note table. Notes append only; successful append updates parent timestamp transactionally.
+PATCH rejects missing/non-object JSON, {}, unknown fields, null/wrong-type/unknown enums. All transitions allowed. Valid no-op writes update timestamp. POST trims body and author, checks body 3-500 non-whitespace Unicode characters and author 1-80 Unicode code points after Python-compatible whitespace trimming, rejects unknown or missing fields. Failed validation changes neither ticket nor note table. Notes append only; successful append updates parent timestamp transactionally.
 
 ## Errors
 All errors: {"error":{"code":"VALIDATION_ERROR","message":"Request validation failed","fields":{"priority":"Choose low, medium, high, or urgent"}}}.

@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, expect, it, vi } from "vitest";
 import App from "./App";
@@ -381,4 +381,29 @@ it("counts note content excluding whitespace and preserves internal formatting",
   expect(within(panel).getByText("3–500 non-whitespace characters · 3/500")).toBeVisible();
   await user.click(within(panel).getByRole("button", { name: "Add note" }));
   await waitFor(() => expect(fetchMock.mock.calls.some(([, options]) => options?.method === "POST" && JSON.parse(options.body).body === "a b\nc")).toBe(true));
+});
+
+
+it("AC-08 counts author Unicode code points and trims exactly like Flask", async () => {
+  const user = userEvent.setup();
+  render(<App />);
+  await user.click(await screen.findByRole("button", { name: ticket.title }));
+  const panel = screen.getByRole("dialog");
+  await within(panel).findByText(ticket.description);
+  const author = within(panel).getByRole("textbox", { name: "Your name" });
+  const note = within(panel).getByRole("textbox", { name: "Note" });
+  fireEvent.change(note, { target: { value: "Valid note" } });
+  for (const value of ["😀".repeat(81), "\u001c \u0085"]) {
+    fireEvent.change(author, { target: { value } });
+    await user.click(within(panel).getByRole("button", { name: "Add note" }));
+    expect(within(panel).getByText("Enter your name (1–80 characters).")).toBeVisible();
+    expect(fetchMock.mock.calls.some(([, options]) => options?.method === "POST")).toBe(false);
+  }
+  for (const value of ["😀".repeat(41), "😀".repeat(80), "\ufeffAgent\ufeff"]) {
+    fireEvent.change(author, { target: { value: "\u001c " + value + " \u0085" } });
+    fireEvent.change(note, { target: { value: "Valid note" } });
+    await user.click(within(panel).getByRole("button", { name: "Add note" }));
+    await waitFor(() => expect(fetchMock.mock.calls.some(([, options]) => options?.method === "POST" && JSON.parse(options.body).author === value)).toBe(true));
+    await waitFor(() => expect(within(panel).getByRole("button", { name: "Add note" })).toBeEnabled());
+  }
 });

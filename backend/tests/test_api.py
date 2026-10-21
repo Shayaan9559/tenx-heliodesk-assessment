@@ -164,6 +164,16 @@ def test_ac08_non_whitespace_boundaries_and_formatting(client):
         assert response.json['notes'][-1]['body'] == body
         assert client.get('/api/tickets/HD-1001').json == response.json
 
+    for author in ['😀'*41, '😀'*80, '\ufeffAgent\ufeff']:
+        response = client.post('/api/tickets/HD-1001/notes', json={'body':'Valid note','author':'\u001c '+author+' \u0085'})
+        assert response.status_code == 201
+        assert response.json['notes'][-1]['author'] == author
+    before = client.get('/api/tickets/HD-1001').json
+    for author in ['😀'*81, '\u001c \u0085']:
+        response = client.post('/api/tickets/HD-1001/notes', json={'body':'Valid note','author':author})
+        assert response.status_code == 400
+        assert client.get('/api/tickets/HD-1001').json == before
+
 
 def test_rule4_migration_preserves_existing_sqlite_notes():
     from sqlalchemy import create_engine, text

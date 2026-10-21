@@ -1,10 +1,10 @@
 # Verification evidence
 
-## Current release audit — 20 October 2026
+## Current release verification — 21 October 2026
 
-Application source: **9364940**.
+Final responsive audit: **9364940**; subsequent Unicode validation correction is recorded in Git history.
 
-Environment: macOS arm64, Python 3.11, Node 26.8.1, Chrome; automated browser test uses Playwright Chromium. **17 backend + 12 frontend + 1 E2E = 30 passing tests.** Strict TypeScript/Vite production build passes. Commands are in [README](../README.md). Results below distinguish local testing from hosted checks.
+Environment: macOS arm64, Python 3.11, Node 26.8.1, Chrome; automated browser test uses Playwright Chromium. **17 backend + 13 frontend + 1 E2E = 31 passing tests.** Strict TypeScript/Vite production build passes. Commands are in [README](../README.md). Results below distinguish local testing from hosted checks.
 
 ### Reproducible setup and automated verification
 A fresh export of committed source was installed in a separate directory with a new virtual environment, pinned Python dependencies and `npm ci`. README setup created a clean SQLite database with 12 tickets. Running seed again preserved the records; explicit reset rebuilt the deterministic seed. Root HTML and API returned 200. Dependency audit reported zero known npm vulnerabilities at the time of checking.
@@ -14,7 +14,7 @@ After the final responsive corrections, all three suites and the production buil
 | Command from repository root | Result |
 |---|---|
 | `cd backend && ../.venv/bin/pytest -q` | 17 passed |
-| `npm test --prefix frontend` | 12 passed |
+| `npm test --prefix frontend` | 13 passed |
 | `npm run test:e2e --prefix frontend` | Build passed; 1 Chromium test passed |
 
 Backend coverage includes combined queries, priority/title order, pagination, missing tickets, invalid payloads, literal search/query safety, successful persistence, exact note boundaries, failed-write rollback, foreign keys, deterministic seed/reset, cache behavior and preservation of notes during migration. Frontend coverage includes query/page reset, loading/empty/no-results/error/Retry, canonical saves, field feedback, duplicate prevention, draft preservation, missing details, stale responses, row activation and focus restoration.
@@ -68,3 +68,7 @@ Only the E2E bonus option is claimed. Trade-off: a browser download and slower s
 - Demo history includes labelled verification notes, including one short note saved before the literal rule-4 correction. Existing append-only history was preserved; the current API rejects that input. No known current validation bypass is claimed.
 - SQLite lower() supplies ASCII case-insensitivity; international Unicode case folding is not implemented.
 - The six-page PDF records the 19 October walkthrough. This document records the newer final audit and corrections. Personalized effort and correspondence stay in the submission email.
+
+## Audit finding corrected — Unicode author names (21 October 2026)
+
+React previously counted UTF-16 units while Flask counted Unicode code points. The client now counts code points after trimming the same whitespace set as Python, preserving U+FEFF exactly as Flask does. The same trim helper is used for submitted note/author values. A new frontend behavior regression and extended backend boundary coverage accept 41/80 supplementary characters, reject 81 and whitespace-only names, and verify matching Unicode trim semantics. All 17 backend, 13 frontend and one real-browser E2E tests passed after the correction; production build passed. No hosted demo note was added to test this boundary. The PDF and earlier audit evidence retain their dated historical totals.

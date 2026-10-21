@@ -25,7 +25,7 @@ Baseline: Technical Assessment, candidate brief v2.0. Audited 20 October 2026. T
 | Backend validation, parameterized queries, safe errors, UTC dates | Pass | NFR-01/API-01, service + models + routes; invalid payload, query safety and rollback tests |
 | Configurable API/database, narrow origin, no secrets | Pass | [README](../README.md), [.env.example](../.env.example); same-origin/proxy avoids allow-all CORS |
 | Working public deployment and persisted primary workflow | Pass with documented deployment choice | [live app](https://tenx-heliodesk-assessment.vercel.app), [health](https://tenx-heliodesk-assessment.vercel.app/api/health); hosted Postgres replaces ephemeral SQLite, local SQLite fully reproducible |
-| ≥5 backend and ≥5 frontend tests, isolated database | Pass | 17 backend, 12 frontend; one additional real-browser E2E; [verification](verification.md) |
+| ≥5 backend and ≥5 frontend tests, isolated database | Pass | 17 backend, 13 frontend; one additional real-browser E2E; [verification](verification.md) |
 | AC-01–12 status, clean setup, browser/width/keyboard, API checks, limits | Pass | [verification](verification.md) contains each criterion and supporting evidence |
 | README, five SDD docs, sources/tests/manifests/seed/config, meaningful commits | Pass | [final submission index](submission.md), repository history and linked files |
 | No secrets/dependencies/database/build outputs committed | Pass in tracked-source audit | Hygiene audit; intentional walkthrough/evidence media retained |

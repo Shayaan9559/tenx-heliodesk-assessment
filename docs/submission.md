@@ -20,7 +20,7 @@ The frontend and Flask API share the application domain. Source, application and
 - Recorded optional [end-to-end persistence test](../frontend/e2e/ticket-persistence.spec.ts), [video](evidence/e2e-persistence.webm) and [result](evidence/e2e-result.json).
 
 ## Final verification
-**30 automated tests passed:** 17 backend, 12 frontend and one real-browser E2E. Strict TypeScript/Vite production build passed. A fresh checkout with newly installed dependencies verified the documented SQLite setup and seed/reset procedures. Hosted query/validation/persistence checks, public reviewer access and Chrome desktop/320px keyboard checks passed. [Final audit](evidence/final-audit.json).
+**31 automated tests passed:** 17 backend, 13 frontend and one real-browser E2E. Strict TypeScript/Vite production build passed. A fresh checkout with newly installed dependencies verified the documented SQLite setup and seed/reset procedures. Hosted query/validation/persistence checks, public reviewer access and Chrome desktop/320px keyboard checks passed. [Final audit](evidence/final-audit.json).
 
 ## Engineering trade-off
 React and Flask are deployed together to simplify integration and avoid unnecessary cross-origin configuration. SQLite provides reproducible local development and assessment testing; Supabase Postgres provides durable hosted storage on Vercel. Saves use server-confirmed responses for predictable error handling.

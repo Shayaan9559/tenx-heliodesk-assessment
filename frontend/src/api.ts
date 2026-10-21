@@ -133,3 +133,7 @@ export const api = {
 // excluding U+FEFF (which JavaScript's \s treats as whitespace).
 export const noteLength = (value: string) =>
   Array.from(value).filter((character) => !/[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]/u.test(character)).length;
+
+// Match Python str.strip() without treating U+FEFF as whitespace.
+export const trimText = (value: string) => value.replace(/^[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+|[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/gu, "");
+export const authorLength = (value: string) => Array.from(trimText(value)).length;

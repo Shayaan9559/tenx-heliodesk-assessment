@@ -56,5 +56,7 @@ AC-01 through AC-12 have the exact behaviors above and must receive Pass/Partial
 
 - Final responsive audit: retain last-updated time beneath each title when compact table layouts hide the dedicated column; use an unavailable count label during list failures. FR-01/10/12, AC-01/10/12.
 
+- Unicode author validation correction (21 October 2026): React counts trimmed Unicode code points and uses Python-compatible whitespace trimming to match backend author limits; FR-08/AC-08. Supplementary-character and trim boundary regressions added.
+
 ## Selected optional bonus
 BONUS-01: One repeatable automated browser E2E test traverses React -> HTTP -> Flask -> isolated SQLite -> response -> browser reload. Covers AC-04, AC-05 and AC-07 with a saved status/priority and exactly one appended note. Only this optional bonus is selected.

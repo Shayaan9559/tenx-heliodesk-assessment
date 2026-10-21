@@ -5,6 +5,8 @@ import {
   date,
   label,
   noteLength,
+  authorLength,
+  trimText,
   priorities,
   statuses,
   type Priority,
@@ -105,7 +107,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
       const invalid: Record<string, string> = {};
       if (noteLength(body) < 3 || noteLength(body) > 500)
         invalid.body = "Enter 3–500 non-whitespace characters.";
-      if (!author.trim() || author.trim().length > 80)
+      if (authorLength(author) < 1 || authorLength(author) > 80)
         invalid.author = "Enter your name (1–80 characters).";
       if (Object.keys(invalid).length) {
         setFields(invalid);
@@ -119,7 +121,7 @@ export default function TicketDialog({ id, onClose, onSaved }: Props) {
       const saved =
         kind === "ticket"
           ? await api.update(id, { status, priority })
-          : await api.note(id, { body: body.trim(), author: author.trim() });
+          : await api.note(id, { body: trimText(body), author: trimText(author) });
       setTicket(saved);
       // A note response must not discard an unsaved status/priority draft.
       if (kind === "ticket") {
